@@ -1,0 +1,140 @@
+/*
+	style.css
+	Pennie Quinn
+	9-9-2017
+*/
+
+a {
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+
+article {
+	min-height:500px;
+}
+
+article>header {
+	text-align:center;
+}
+
+blockquote {
+	border-left:5px solid #DDD;
+	margin:1.5em 5px;
+	padding:0 10px;
+	quotes: "\201C""\201D""\2018""\2019";
+}
+
+body {
+	margin:40px auto;
+	max-width:700px;
+	line-height:1.6;
+	font-size:18px;
+	font-family:"Times New Roman", Times, serif;
+	background-color:#fefefe;
+	color:#444;
+	padding:0 10px
+}
+
+code {
+	font-size:80%;
+	font-family:Consolas;
+}
+
+details p {
+	text-indent:2rem;
+}
+
+footer {
+	text-align:center;
+	color:#444;
+}
+
+h1,h2,h3 {
+	line-height:1.2;
+}
+
+hr {
+	width:100%;
+}
+
+img {
+	display:block;
+	margin:auto;
+	max-width:100%;
+}
+
+mark {
+	background-color:#ff9;
+}
+
+nav {
+	text-align:center;
+	color:#aaa;
+}
+nav a {
+	color:#444;
+}
+
+pre {
+	white-space:pre-wrap;
+}
+
+pre>code {
+	font-size:80%;
+	font-family:Consolas;
+	line-height:1.0;
+}
+
+time {
+	font-style:italic;
+	color:#999;
+}
+
+
+.box {
+	margin: 3rem auto;
+	box-shadow: 0px 20px 30px -10px rgba(0,0,0,0.3);
+}
+
+.codebox {
+	max-height:20.5em;
+	overflow:auto;
+}
+
+
+#bigquote {
+	font-size:28px;
+}
+
+#inline-header {
+	display:inline;
+}
+
+#main-header h1 {
+	font-size:48px;
+	line-height:0;
+	font-family:Consolas;
+	color:#444;
+}
+
+#main-header h3 {
+	font-style:italic;
+	color:#999;
+}
+
+#main-title a {
+	text-decoration:none;
+}
+
+#recent {
+	list-style:none;
+}
+#recent time {
+	float:right;
+}
+
+#center {
+	text-align:center;
+}
