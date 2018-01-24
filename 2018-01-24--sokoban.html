@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<hmtl>
+<head>
+	<title>/dev/null</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="css/print.css" media="print" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" media="screen, projection" />
+</head>
+
+<body id="home">
+
+	<header id="main-header">
+		<div width="100%">
+			<div id="main-title">
+				<a href="index.html"><h1>/dev/null</h1></a>
+			</div>
+			<p>it all ends up here eventually</p>
+		</div>
+		<hr>
+			<nav width="100%">
+				<a href="about.html">about</a> |
+				<a href="index.html">posts</a> |
+				<a href="mailto:pennie.ada.quinn@gmail.com">email</a> |
+				<a href="https://twitter.com/transmutrix">twitter</a> |
+				<a href="https://github.com/pennie-quinn">github</a> |
+				<a href="games.html">games</a>
+				<!--<a href="https://www.patreon.com/trashgirl">patreon</a>-->
+			</nav>
+		<hr>
+	</header>
+
+
+	<main>
+		<article>
+	        
+	            <header>
+    <h1>I made a Sokoban clone</h1>
+    <strong><time>Wed, 24 Jan, 2018</time></strong>
+</header>
+
+<p>At the start of 2018 I was sleeping on a friend's couch, waiting until I was
+able to move into a new place. It was stressful for everyone. In typical fashion,
+I threw myself into a programming project to fight the depression and anxiety.</p>
+
+<p>And it worked this time. I had built up enough of a codebase in <code>toast</code>, a small
+collection of C libraries I've been writing for game jam projects, that I could
+actually make something, and finish it, in a reasonable amount of time.</p>
+
+<h3>SWIG</h3>
+
+<p>The primary catalyst was finding <a href="http://www.swig.org/">SWIG</a>.
+I had looked for a Lua binding
+generator on many previous occasions, and each time, I was disappointed to
+find utilities written only for C++. A stackoverflow thread led me to
+SWIG, which 1) works great for C,  2) can generate bindings for most popular
+scripting languages, not just Lua ,and 3) is highly configurable.</p>
+
+<p>In a few hours, SWIG was integrated into my build process and <code>toast</code> was fully
+accessible in Lua. There were a couple kinks--SWIG doesn't understand <code>typedefs</code>,
+so in the SWIG pass, <code>typedef'd</code> fundamental types are <code>#defined</code> instead.</p>
+
+<p>Furthermore, a lot of my math library stuff is written as functional macros.
+Naturally, these don't have enough implicit data for SWIG to figure out bindings
+for them. So I wrote a file, just for SWIG, defining C functions to wrap my
+macros, which SWIG then wraps to Lua with prettier names. Yes, that is convoluted.
+No, it isn't pretty. Example:</p>
+
+<pre><code>double _macro_clamp    (f64 v, f64 a, f64 b)
+{
+    return clamp(v,a,b);
+}
+</code></pre>
+
+<h3>A Test Project</h3>
+
+<p>I am primarily a C programmer. I don't have extensive Lua experience, but I like
+the language a lot--it is easy to play in. I wanted to build a test project with
+<code>toast</code> to help it mature. Real usage finds bugs better than myopic test cases.</p>
+
+<p>With Lua integration in place, I could quickly poop out whatever I chose, so I
+chose Sokoban. As a kid I played a Mac OS 9 clone of the game called
+"Sloppy Sokoban" and enjoyed it a lot. Sokoban is a simple game, with simple
+rules, so it was a good fit for testing.</p>
+
+<h3>Beginnings</h3>
+
+<p>I wrote sokoban.cpp, which contained all the init, input bindings, and frame timing.
+It calls 3 Lua hooks, <code>_init()</code>, <code>_update()</code>, and <code>_render()</code> as needed. Literally
+every other bit of the game is written in Lua (I got carried away with the convenience).</p>
+
+<h3>Parsing Levels</h3>
+
+<p>I took some of my old pixel art, from a prototype 2D platformer about ducks,
+and a font from another unfinished project, this one a shmup <em>a la</em>
+<a href="https://www.ambrosiasw.com/games/dr/">Deimos Rising</a>,
+and set to work to get something on the screen.</p>
+
+<p>While researching Sokoban, I discovered that the cult classic had spawned a
+still-thriving online community of clones, levels, solution videos, etc. There
+is a semi-standard format for sokoban levels, which takes 2 forms: a block of
+ASCII characters, or a somewhat-compressed block of ASCII characters. You can
+read about the format <a href="http://sokobano.de/wiki/index.php?title=Level_format">here.</a></p>
+
+<p>I also found repositories of level collections, with levels from the original
+games in addition to thousands of player-created ones. I nabbed a few levels to
+test with, and started writing my parser.</p>
+
+<p>It is at this point that I learned something important: parsing a text file,
+character by character, sucks in Lua. Also, spaces are a token in the Sokoban
+level format (sigh).</p>
+
+<p>In Lua, the only way to get a character from a string is as a <em>substring</em>,
+and the only way to compare <code>char</code> values is by calling <code>string.byte(str, i,j)</code>.
+Eesh. Could I have written the parser in C, letting SWIG bind it? Yes. But I
+wanted to try doing it "the Lua way", and never changed it thereafter because it
+worked fine.</p>
+
+<p>Loaded boards were left as a table of 1-character strings, rather than making
+a "tile" structure with more data.</p>
+
+<h3>Better Artwork</h3>
+
+<p>At this point, I decided I didn't want all my walls and boxes (bread) to look
+the same, so I made some variants in Aseprite. To apply them, I didn't want to
+add data to the level files, nor did I want to add a lot of data to loaded levels.</p>
+
+<p>So, each level string is hashed naively, and its hash is used to seed Lua's RNG.
+Then, to draw the board, the seed is reapplied each frame, and the renderer
+chooses a random variant from the list for each tile, thus keeping them identical
+between renders.</p>
+
+<p>A problem arose: now each piece of bread needs to remember which graphic it uses.
+Bread can be moved, meaning it will receive a different graphic from the RNG when
+pushed. So loaded levels then had data added for each bread's identity.</p>
+
+<h3>Mechanics</h3>
+
+<p>Implementing the actual rules of Sokoban was a breeze, since it is basically a
+board game.</p>
+
+<h3>Animation</h3>
+
+<p>Early on, I used coroutines to make tweens. In the end, most of the animation
+in the game was simple enough, with little enough state, that I simply wrote the
+code inline.</p>
+
+<p>So, amusingly, player movement uses coroutine tweening, while the new highscore
+cutscene with particle systems does <em>not</em>.</p>
+
+<h3>Managing Screens</h3>
+
+<p>About halfway through the project, I realized that the game had become too complex
+for me to manage everything with a long chain of <code>if</code>s in <code>_update()</code> and <code>_render()</code>.</p>
+
+<p>So, I implemented a Lua "class" called Screen, from which each screen in the game
+inherits some stub methods and flags. Then, I made a simple stack, which holds
+Screens and manages them.</p>
+
+<p>Only the top screen on the stack is updated.</p>
+
+<p>For rendering, screens can be "blocking" or "non-blocking". This was done to
+facilitate cutscenes and menus. Each frame, the stack provides a list of screens
+to be rendered. The first screen in the list will be the first "blocking" screen
+from the top of the stack, followed by any "non-blocking" screens above it.</p>
+
+<p>So, for example, the "new highscore" screen is a cutscene which is drawn over the
+"level won" screen.</p>
+
+<h3>Transitions</h3>
+
+<p>There is one transition Screen, which is controlled with <code>transition:start(...)</code>.
+You specify whether you want to transition 'out' or 'in', and optionally may
+provide a callback function to be run when the transition completes. This
+method pushes the transition screen onto the screen stack, and pops it automatically
+upon completion.</p>
+
+<p>To transition to a new screen looks something like this:</p>
+
+<pre><code>transition:start('out', function()
+    screen.pop() -- remove the current screen, for example
+    screen.push(newscr)
+    transition:start('in')
+end)
+</code></pre>
+
+<h3>Lua Binding Binding Bindings</h3>
+
+<p>C integration is cool, but I ended up writing a lot of repeated code to use
+integrated functions and datatypes in Sokoban, with many opportunities for
+incorrect usage on my part.</p>
+
+<p>I fixed this problem by abstracting various pieces of <code>toast</code> interface in Lua
+in ways specific to the game's needs. A good example of this is in playing sound
+effects: I wrote a Lua function to look up a sound effect by name in the game's
+table of SFX assets and play it back through <code>toast</code>, supplying default arguments
+and whatnot.</p>
+
+<p>This practice turned code like this:</p>
+
+<pre><code>if toast.btn(toast.btn_start).state == toast_ButtonPressed
+   or toast.key_GetState(--[[some input I'm trying out]]) == 1  
+then
+    local u = sfx['foo.wav'].handle
+    toast.mix_PlayChunk(toast.SoundMixer, u, 1, 1, 0)
+end
+</code></pre>
+
+<p>into code like this:</p>
+
+<pre><code>if input.Start() then audio.playSE('foo') end
+</code></pre>
+
+<p>With the added benefit of better error-checking, since I only had to type it <em>once</em>
+in the wrapper.</p>
+
+<h3>Toast Evolution</h3>
+
+<p>Throughout the course of making my Sokoban clone, I uncovered bugs in <code>toast</code>,
+as I had hoped I would. Subimages were pitched wrong. Alpha blend was busted.
+Some of my SWIG configuration needed fixing. I found problems like these by
+using my own libs intuitively for actual work, with real expectations.</p>
+
+<p>As usual, I should have followed a programming saw more diligently:</p>
+
+<p id="center"> <strong>"Always write the usage code first!"</strong> </p>
+
+<p>I also took some breaks from Sokoban to write new utilities: <code>paq_aseprite.h</code>,
+an <code>stb_image</code>-style library for loading Aseprite project files directly,
+and <code>paq_wav.h</code>, a naive .WAV file loader (16bit PCM WAVs only, for the moment).</p>
+
+<p>My Aseprite decoder isn't used in Sokoban, but I had wanted something like it
+on numerous previous projects, and I knew I would want something like it again
+on upcoming ones.</p>
+
+<p>My WAV loader is used for all the SFX, and was written out of frustration.
+I previously used only <code>stb_vorbis</code> to load my audio, meaning that any
+audio I wanted to use needed to be an .ogg file... Meaning that to even <em>test</em>
+a sound effect, I first needed to convert it from a .wav to an .ogg. Loading a WAV
+file in the most trivial case (which I could assure for myself) is pretty
+straightforward, so I spent a couple of hours adding it in.</p>
+
+<p>I also made a little .NET program to conveniently browse and copy/rename .wav files,
+which proved to be a lifesaver when sifting through SFX libraries.</p>
+
+<h3>The Future of Toast</h3>
+
+<p>Building an actual game with <code>toast</code> helped me fix some of its bugs, but it also
+made me realize that a <em>lot</em> of its libraries aren't very user-friendly, despite
+my best efforts. They also contain inconsistencies and other issues.</p>
+
+<p>So, before <code>toast</code> ever sees the light of day I intend to rework most of it into
+something more palatable. I will likely remove "convenient" dependences between
+modules, for example, to make each one <em>actually</em> be self-contained. I will likely
+turn most <code>toast</code> modules into <code>paq_*.h</code> libraries, which will be able to stand alone.</p>
+
+<h2>Ok, Where's the Game?</h2>
+
+<iframe class="box" frameborder="0" src="https://itch.io/embed/216702?linkback=true" width="552" height="167"></iframe>
+
+<h3>References</h3>
+
+<ul>
+<li><a href="http://www.swig.org/">SWIG</a></li>
+<li><a href="http://sokobano.de/wiki/index.php?title=Level_format">&quot;Sok&quot; format</a></li>
+<li><a href="https://aseprite.org">Aseprite</a></li>
+<li><a href="https://github.com/nothings/stb">stb libraries</a></li>
+<li><a href="https://github.com/pennie-quinn/paq">paq libraries</a></li>
+<li><a href="http://luajit.org/">luaJIT</a></li>
+</ul>
+
+	        
+		</article>
+	</main>
+
+
+	<footer id="main-footer">
+		<hr>
+		<p>&copy Copyright Pennie Quinn 2018, all rights reserved.</p>
+	</footer>
+
+</body>
+</hmtl>
