@@ -5,10 +5,10 @@
 	last updated: 1-24-2018
 */
 
-a {
+nav a {
 	text-decoration: none;
 }
-a:hover {
+nav a:hover {
 	text-decoration: underline;
 }
 
