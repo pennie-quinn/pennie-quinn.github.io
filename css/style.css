@@ -1,8 +1,8 @@
 /*
 	file:         style.css
 	author:       Pennie Quinn
-	created:      9-9-2017
-	last updated: 1-24-2018
+	created:      09-09-2017
+	last updated: 03-26-2018
 */
 
 nav a {
@@ -12,9 +12,11 @@ nav a:hover {
 	text-decoration: underline;
 }
 
+/*
 article {
 	min-height:500px;
 }
+*/
 
 article>header {
 	text-align:center;
@@ -27,15 +29,25 @@ blockquote {
 	quotes: "\201C""\201D""\2018""\2019";
 }
 
+
 body {
+	background-color: #2ce8f5;
+	background-image: url("img/cover-photo.png");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	margin: 0 0;
+}
+
+#contents {
 	margin:40px auto;
-	max-width:700px;
+	max-width:750px;
 	line-height:1.6;
 	font-size:18px;
 	font-family:Helvetica, Arial, sans-serif;
 	background-color:#fefefe;
 	color:#444;
-	padding:0 10px
+	padding:10px 50px;
+	box-shadow: 5px 5px 0px  #0095e9 ;
 }
 
 code {
