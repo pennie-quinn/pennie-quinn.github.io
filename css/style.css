@@ -105,6 +105,12 @@ time {
 	color:#999;
 }
 
+figcaption {
+	text-align: center;
+	font-style: italic;
+	font-size: 90%;
+}
+
 .box {
 	margin: 3rem auto;
 	box-shadow: 0px 10px 30px -10px rgba(0,0,0,0.3);
