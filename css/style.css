@@ -135,8 +135,8 @@ a:hover {
 .footer {
   max-width: 980px;
   border-top: 1px dashed #dadada;
-  font-size: 80%;
-  line-height: 8px;
+  font-size: 14px;
+  line-height: 16px;
   color: gray;
   margin-left: 300px;
   padding: 10px 0 10px 60px;
@@ -265,6 +265,22 @@ pre code, a code {
   font-size: 14px;
   line-height: 18px;
   color: #444;
+}
+
+@media screen and (max-width: 800px) {
+  .sidebar {
+    visibility: hidden;
+  }
+
+  .main-column {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .footer {
+    margin-left: 0;
+    max-width: 100%;
+  }
 }
 
 /*# sourceMappingURL=style.css.map */
