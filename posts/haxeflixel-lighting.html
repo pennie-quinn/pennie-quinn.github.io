@@ -1,0 +1,328 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="../css/style.css?Tue Oct 23 17:26:14 2018" />
+	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
+	<title>HaxeFlixel Lighting Adventure</title>
+	
+	<script type="text/javascript">
+		window.site_root = "..";
+	</script>
+	
+	<script type="text/javascript">
+  if (window.location.hostname != "localhost") {
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-127983421-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  }
+</script>
+</head>
+
+<body class="nice_fonts">
+	
+<div class="sidebar">
+	<a href="../index.html" title="pennie.net">
+		<img class="logo" src="../img/devnull.svg" alt="pennie.net" />
+	</a>
+	
+	<p>Pennie's ramblings. Feel free to <a href="mailto:pennie.ada.quinn@gmail.com">email me</a>.</p>
+	
+	<div class="sidebar_icons">
+		<a href="mailto:pennie.ada.quinn@gmail.com"><img src="../img/icon/mail.svg" alt="email" /></a>
+		<a href="https://twitter.com/transmutrix"><img src="../img/icon/twitter.svg" alt="twitter" /></a>
+		<a href="https://github.com/pennie-quinn"><img src="../img/icon/github.svg" alt="github" /></a>
+	</div>
+	
+	<br>
+	
+	<p>Recent Posts</p>
+	<p><a href='https://pennie-quinn.github.io/posts/intimacy-of-bugs.html'>The Unexpected Intimacy of Game Bugs</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/haxeflixel-lighting.html'>HaxeFlixel Lighting Adventure</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/sokoban.html'>I made a Sokoban clone</a></p>
+
+</div>
+	
+<div class="main-column">
+
+<div class="post-header">
+	<h1>HaxeFlixel Lighting Adventure</h1>
+	<div class="post-meta">
+		Posted
+		<span class: "post-date">Thu, 15 Mar, 2018</span>
+		by Pennie (<a href="https://twitter.com/transmutrix">@transmutrix</a>)
+	</div>
+</div>
+
+<div class="inner post-body"><p>Lately I've been exploring Haxe/OpenFL/Haxeflixel, and I wanted to add simple,
+oldschool &ldquo;cutout&rdquo; lighting to my project. I also wanted whatever implementation
+I used to be portable; it needed to be identical on html5, flash, and cpp targets.</p>
+
+<p>It took me most of a day&rsquo;s work to find a solution to my problem, after reading 
+lots of documentation and finding obscure articles with pieces of the puzzle. I
+posted a clip of my results to Twitter, and some folks asked for an explanation,
+so here we go!</p>
+
+<p><strong>Disclaimer:</strong> this sequence of events is synthesized from my terrible short term
+memory, re-reading Discord logs with my SO to find screenshots, and checking my 
+browser history, but I have tried to include all the source reading I used, to 
+give credit where it is due.</p>
+
+<p><ul><li><a href="#attempt-1-openfldisplayblendmode">Attempt 1: openfl.display.BlendMode </a></li>
+<li><a href="#attempt-2-openflgeomcolortransform">Attempt 2: openfl.geom.ColorTransform </a></li>
+<li><a href="#source-code">Source Code </a></li>
+<li><a href="#in-action">In Action </a></li>
+<li><a href="#further-thoughts">Further Thoughts </a></li></ul></p>
+
+<h2 id="attempt-1-openfldisplayblendmode">Attempt 1: openfl.display.BlendMode </h2>
+
+<p>The first promising idea, from this <a href="https://groups.google.com/forum/#%21topic/haxeflixel/7Ygo6nEu60I">discussion</a>
+: make a big black FlxSprite with <code>BlendMode.MULTIPLY</code>,
+then stamp light sprites (value indicates light level) with <code>BlendMode.SCREEN</code> to it. 
+In theory, the white parts of the shadowmap won&rsquo;t change the underlying pixels 
+at all, leaving them &ldquo;lit&rdquo;.</p>
+
+<p>This method works really well&hellip; for the Flash target. You can even use some
+color in your lights, if you like.</p>
+
+<p><img src="../img/light_tut/scr01.png" alt="lighting works as intended" /></p>
+
+<p>However, built for Windows native:</p>
+
+<p><img src="../img/light_tut/scr02.png" alt="lit areas are more vibrant" /></p>
+
+<p>And, built for html5 (screenshot missing), the white bits wash out underlying
+colors and overlapping lights don&rsquo;t work (corners are visible despite
+<code>BlendMode.SCREEN</code>).</p>
+
+<p><strong>Lesson:</strong> OpenFL docs claiming that a blendmode <em>exists</em> on two platforms should
+not be taken as an indication that the implementations are remotely similar in 
+result.</p>
+
+<h2 id="attempt-2-openflgeomcolortransform">Attempt 2: openfl.geom.ColorTransform </h2>
+
+<p>So, <code>BlendMode</code> is out. It&rsquo;s not reliable and I would prefer to not use it at all.
+(also worth noting: <code>FlxCamera.color</code> isn&rsquo;t portable, either, so I'm using my
+eventual solution for that functionality, too).</p>
+
+<p>At this point, I was very lucky to find <a href="http://coinflipstudios.com/devblog/?p=421">this post</a> 
+by Wy Leong. The most important takeaway, for me, was this: <code>new ColorTransform(0,0,0,-1,0,0,0,255)</code></p>
+
+<p>What does this do? The first 4 parameters are <code>Float</code> channel multipliers [0.0,1.0] 
+for the existing pixel data, and the remaining 4 are <code>Int</code> channel offsets [-255,255]
+to apply <em>after</em> the multiply is done. So this ColorTransform will effectively
+get the complement of an image&rsquo;s alpha channel, or &ldquo;flip&rdquo; it.</p>
+
+<p>Excellent! So, with this method: make a <code>FlxColor.TRANSPARENT</code> image, then stamp
+light sprites (alpha indicates light level) to it, then apply the ColorTransform,
+and that&rsquo;s it! This means you could even use an object&rsquo;s ordinary sprite as a 
+light if you wanted, to create a self-lit surface effect. Cool!</p>
+
+<p>Only, there&rsquo;s a slight snag with portability (sigh). For the html5 target, the
+transform is applied as expected. An empty pixel, <code>0x00000000</code> has its alpha
+channel flipped, giving <code>0x000000ff</code>. Great! Maths!</p>
+
+<p>But on cpp and Flash targets, I got this:</p>
+
+<p><img src="../img/light_tut/scr03.png" alt="unlit areas remain clear" /></p>
+
+<p>How odd. Seemingly, transparent pixels are <em>ignored</em> by the transform. I have
+been unable to find documentation of this behavior, so I have no way of knowing
+if this was a case of user error or a limitation (or bug) of OpenFL.</p>
+
+<p>The solution, as such, is simple: on Flash and cpp, instead of transparent pixels,
+I used nearly-transparent pixels, which are transformed as one would expect them
+to be and which are visually indistinguishable in the result.</p>
+
+<pre><code>var _shadowColor =
+        #if html5     FlxColor.TRANSPARENT 
+        #else     new FlxColor(0x01010101) 
+        #end;
+</code></pre>
+
+<p>With this <em>single</em> preprocessor switch in place, things work as they should.
+Awesome! I was both thrilled and annoyed.</p>
+
+<h2 id="source-code">Source Code </h2>
+
+<p>Below, I am including the entire Lighting class I have written. It is incredibly
+short and simple, but maybe someone will get use out of it.</p>
+
+<pre><code>/*
+@author:  Pennie Quinn
+@created: Mar 13, 2018
+
+    A simple "cutout" lighting system. Works the same on html5, flash, and cpp
+    targets (in my tests thus far).
+
+    NOTE: mobile targets have not been tested!
+
+usage:
+    var lighting = new Lighting();
+    lighting.alpha = 0.7; // or whatever
+    //lighting.blue = 20;   // for example
+    //lighting.color = FlxColor.BLACK;
+    add(lighting);
+    ...
+    ...
+    var light = new FlxSprite();
+    light.loadGraphic(...);
+    lighting.add(light);
+*/
+package paq;
+
+import openfl.geom.Rectangle;
+import openfl.geom.ColorTransform;
+
+import flixel.FlxG;
+import flixel.FlxObject;
+import flixel.FlxSprite;
+import flixel.group.FlxGroup;
+import flixel.util.FlxColor;
+
+
+class Lighting extends FlxGroup
+{
+    var _shadowColor =
+        #if html5     FlxColor.TRANSPARENT 
+        #else     new FlxColor(0x01010101) 
+        #end;
+
+    var _colorTransform = new ColorTransform(0,0,0,-1,0,0,0,255);
+
+    var _boundsRect:Rectangle;
+    var _shadow:FlxSprite;
+
+    // 0 to 1.0
+    public var alpha(get, set):Float;
+    function get_alpha() { return _shadow.alpha; }
+    function set_alpha(x) { return _shadow.alpha = x; }
+
+    // -255 to 255
+    public var red(get, set):Float;
+    function get_red(){ return _colorTransform.redOffset; }
+    function set_red(x){ return _colorTransform.redOffset = x; }
+
+    // -255 to 255
+    public var green(get, set):Float;
+    function get_green(){ return _colorTransform.greenOffset; }
+    function set_green(x){ return _colorTransform.greenOffset = x; }
+
+    // -255 to 255
+    public var blue(get, set):Float;
+    function get_blue(){ return _colorTransform.blueOffset; }
+    function set_blue(x){ return _colorTransform.blueOffset = x; }
+
+    public var color(get, set):FlxColor;
+    function get_color() { return _colorTransform.color; }
+    function set_color(x:FlxColor):FlxColor
+    { 
+        _colorTransform.redOffset   = x.red;
+        _colorTransform.greenOffset = x.green;
+        _colorTransform.blueOffset  = x.blue;
+        return _colorTransform.color;
+    }
+
+    override public function new(?capacity:Int = 0)
+    {
+        var w = FlxG.width;
+        var h = FlxG.height;
+
+        _shadow = new FlxSprite(0,0);
+        _shadow.scrollFactor.set(0,0);
+        _shadow.allowCollisions = FlxObject.NONE;
+        _shadow.moves = false;
+        _shadow.immovable = true;
+
+        _boundsRect = new Rectangle(0, 0, w, h);
+        _shadow.makeGraphic(w, h, _shadowColor, true);
+        _shadow.alpha = 1;
+
+        super();
+    }
+
+    function _drawLight(light:FlxSprite):Void
+    {
+        if (light.graphic == null) return; // necessary?
+        var pos = light.getScreenPosition();
+        _shadow.stamp(light, Std.int(pos.x), Std.int(pos.y));
+    }
+
+    override public function draw():Void
+    {
+        // clear the shadow map
+        _shadow.pixels.fillRect(_boundsRect, _shadowColor);
+
+        // draw the lights into the shadow map
+        this.forEachOfType(FlxSprite, _drawLight, true);
+
+        // flip _shadow's alpha channel, making lights a cutout sprite
+        _shadow.pixels.colorTransform(_boundsRect, _colorTransform);
+
+        // force update for draw -- necessary?
+        _shadow.drawFrame(true); 
+
+        // draw the shadow map
+        _shadow.draw();
+    }
+}
+</code></pre>
+
+<h2 id="in-action">In Action </h2>
+
+<p>Here is an example of my final result:</p>
+
+<p><img src="../img/light_tut/scr06.png" alt="lighting that works as intended" /></p>
+
+<p>The light seen is a vanilla FlxSprite using this sprite sheet:</p>
+
+<p><img src="../img/light_tut/lantern.png" alt="the lantern sprite sheet" /></p>
+
+<h2 id="further-thoughts">Further Thoughts </h2>
+
+<p>For use cases other than my current project, you could extend this with typical
+lighting system things: for example, a high-res game would likely want a shadowmap
+of lower resolution than the game itself with bilinear filtering, which is simple 
+to do. In a game with lots of lights or a large world, culling would be a good idea.</p>
+
+<p>In my game&rsquo;s case, the &ldquo;world&rdquo; never exceeds two screens of space, and the
+number of lights will remain quite small, so I haven&rsquo;t bothered and likely won&rsquo;t.</p>
+
+<p>Hopefully this article was helpful! Thanks for reading :)</p>
+
+<p>If you want to hear about my future HaxeFlixel shenanigans, check out my 
+<a href="https://twitter.com/transmutrix">Twitter.</a></p>
+</div>
+
+<div class="comments"><a name="comments"></a><div id="disqus_thread"></div>
+		<script type="text/javascript">
+		    var disqus_shortname = 'pennie';
+		    (function() {
+		        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		    })();
+		</script></div></div>
+	
+	<div class="footer">
+		<p>
+			Copyright &copy; Pennie Quinn 2018
+			&middot;
+			Generated on Tue Oct 23 17:26:14 2018
+			&middot;
+			<a href="../index.html">Home</a>
+		</p>
+	</div>
+	
+	<script type="text/javascript">
+		if (navigator.appVersion.indexOf("Win") >= 0) { document.body.className=""; }
+	</script>
+</body>
+</html>

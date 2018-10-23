@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="../css/style.css?Tue Oct 23 17:26:14 2018" />
+	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
+	<title>The Unexpected Intimacy of Game Bugs</title>
+	
+	<script type="text/javascript">
+		window.site_root = "..";
+	</script>
+	
+	<script type="text/javascript">
+  if (window.location.hostname != "localhost") {
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-127983421-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  }
+</script>
+</head>
+
+<body class="nice_fonts">
+	
+<div class="sidebar">
+	<a href="../index.html" title="pennie.net">
+		<img class="logo" src="../img/devnull.svg" alt="pennie.net" />
+	</a>
+	
+	<p>Pennie's ramblings. Feel free to <a href="mailto:pennie.ada.quinn@gmail.com">email me</a>.</p>
+	
+	<div class="sidebar_icons">
+		<a href="mailto:pennie.ada.quinn@gmail.com"><img src="../img/icon/mail.svg" alt="email" /></a>
+		<a href="https://twitter.com/transmutrix"><img src="../img/icon/twitter.svg" alt="twitter" /></a>
+		<a href="https://github.com/pennie-quinn"><img src="../img/icon/github.svg" alt="github" /></a>
+	</div>
+	
+	<br>
+	
+	<p>Recent Posts</p>
+	<p><a href='https://pennie-quinn.github.io/posts/intimacy-of-bugs.html'>The Unexpected Intimacy of Game Bugs</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/haxeflixel-lighting.html'>HaxeFlixel Lighting Adventure</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/sokoban.html'>I made a Sokoban clone</a></p>
+
+</div>
+	
+<div class="main-column">
+
+<div class="post-header">
+	<h1>The Unexpected Intimacy of Game Bugs</h1>
+	<div class="post-meta">
+		Posted
+		<span class: "post-date">Fri, 06 Apr, 2018</span>
+		by Pennie (<a href="https://twitter.com/transmutrix">@transmutrix</a>)
+	</div>
+</div>
+
+<div class="inner post-body"><p>One of my favorite indie games is <a href="https://www.anodynegame.com"><em>Anodyne</em></a>,
+a game developed by <a href="https://twitter.com/sean_HTCH">Sean Han Tani 韓谷</a>
+and <a href="https://twitter.com/even_kei">Joni Kittaka</a>. 
+It is a zelda-like inspired by <em>The Legend of Zelda: Link&rsquo;s Awakening</em>, 
+a longtime favorite. The game deals with themes of friendships, emotional labor,
+regret, and fugue (that&rsquo;s my interpretation, anyway), while retaining the mechanical 
+and exploratory fun of its inspirations.</p>
+
+<p>In spring 2017, I started development on a zelda-like of my own, intended to 
+explore depression, trauma, and trans identity. It was written in C, and 
+deliberately constructed, both in its source code, art, and mechanics, to evoke 
+the carefree innocence of my days playing Gameboy Color outside as a child.</p>
+
+<p>A common mechanic in Zelda games for GBC is &ldquo;corner walking&rdquo;. In the first
+<em>Legend of Zelda</em>, Link &ldquo;drifts&rdquo; toward the center of tiles as he walks, to
+prevent getting stuck on corners. In <em>A Link to the Past</em>, the physical tile grid
+is more granular, with 8px by 8px physics tiles, and right triangle corners,
+avoiding the problem entirely.</p>
+
+<p>But on the Gameboy Color, while graphical tiles were still 8px by 8px to suit the 
+graphical hardware and rendering pipeline of the system, physical tiles were 
+16px by 16px&mdash;the same size, roughly, as Link and other characters. This was due 
+to the fact that RAM on the GBC was more highly prized. So, each 16x16 logical 
+&ldquo;tile&rdquo; was drawn with four 8x8 graphical characters.</p>
+
+<p><img src="../img/intofbugs/la0.png" alt="&ldquo;a screenshot of Link&rsquo;s Awakening&rdquo;" />
+<p class="caption">a screenshot of Link&rsquo;s Awakening DX</p></p>
+
+<p><img src="../img/intofbugs/la1.png" alt="&ldquo;the corresponding physics data&rdquo;" />
+<p class="caption">the corresponding physics data</p></p>
+
+<p>Also, no diagonal tiles were implemented. This presented a problem: with such a 
+low resolution for physics information (80 bytes + a border of &ldquo;always solid&rdquo; 
+tiles outside the screen boundary), it was very easy for Link to get stuck on 
+corners during play. The &ldquo;drifting&rdquo; mechanic of <em>The Legend of Zelda</em> would be 
+infeasible, as Link could be drifting much farther; this would be visually 
+jarring and make players feel as though they were not in control, as though 
+Link were drunk.</p>
+
+<p>So, the solution chosen was this: detect when link is moving toward a <em>corner</em>, 
+with only a small overlap on the perpendicular axis, and &ldquo;nudge&rdquo; him around it, 
+but only after he was touching the solid tile. Effectively, Link would &ldquo;slide&rdquo; 
+or &ldquo;sidle&rdquo; along the wall to get around it. This felt natural during play, and 
+was, in my opinion, a good solution.</p>
+
+<p><img src="../img/intofbugs/cornerwalk.gif" alt="&ldquo;the corner walk mechanic in action&rdquo;" />
+<p class="caption">the corner walk mechanic in action</p></p>
+
+<p>Given that my game was attempting to evoke the same aesthetic, I wanted to have 
+the same behavior. So, my not-very-good physics engine was given corner walk routines. 
+However! It was more tricky to implement than I expected (as usual), and while 
+I ultimately had a working implementation, it retained some bugs. For example: 
+walking face-first into the middle of a long wall would result in the player 
+character sliding off the corner of one wall tile into the face of its adjacent 
+neighbor.</p>
+
+<p>Looking back, I have several solutions to the problem in mind. That game 
+is currently being rewritten in a different language so that porting to various 
+platforms will be possible with the amount of time that I have.</p>
+
+<p>Recently, I replayed Anodyne, because it holds a special place in my depressive,
+game-loving heart. I was plodding along, doing all the things, luxuriating in the 
+excellent soundtrack, when something wholly unexpected happened:</p>
+
+<p>I walked toward a boulder&hellip; and slid toward the middle of its edge. For a 
+fleeting moment, it felt as though I had shared a knowing glance with the 
+developer. It felt exactly akin to reading a particularly relatable line in a 
+novel or poem, or seeing a character in film that somehow reflected your deepest 
+nature back at you (I encourage you to go watch Bojack and cry, if you haven&rsquo;t). 
+It was a feeling so human, and inexorably tied not to the artwork, nor the 
+music, nor the themes of the game itself, but to its physical construction as a 
+sculpture of chiseled bytes, to the developmental process of the programmer.</p>
+
+<p>I teared up the same way I would have in the consumption of any deeply relatable 
+piece of art, and that experience, valuable and beautiful as it was to me, was 
+completely incidental! I imagined <a href="https://twitter.com/sean_HTCH">Sean Han Tani 韓谷</a> 
+(who did the programming work) sighing and muttering &ldquo;Fuck it I guess&rdquo; 
+while poring over his own corner walking implementation, only for me to later 
+get all this mileage out of a behavior that probably frustrated him.</p>
+</div>
+
+<div class="comments"><a name="comments"></a><div id="disqus_thread"></div>
+		<script type="text/javascript">
+		    var disqus_shortname = 'pennie';
+		    (function() {
+		        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+		        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+		    })();
+		</script></div></div>
+	
+	<div class="footer">
+		<p>
+			Copyright &copy; Pennie Quinn 2018
+			&middot;
+			Generated on Tue Oct 23 17:26:14 2018
+			&middot;
+			<a href="../index.html">Home</a>
+		</p>
+	</div>
+	
+	<script type="text/javascript">
+		if (navigator.appVersion.indexOf("Win") >= 0) { document.body.className=""; }
+	</script>
+</body>
+</html>
