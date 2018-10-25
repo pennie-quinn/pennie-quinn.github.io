@@ -313,7 +313,7 @@ pre code, a code {
 }
 
 /* operators */
-.o, .si {
+.o, .p, .si {
   font-weight: bold;
   color: #ff8ebb;
 }
@@ -323,7 +323,7 @@ pre code, a code {
 }
 
 /* keywords */
-.k, .kd {
+.k, .kd, .kr {
   font-weight: bold;
   color: #ff8ebb;
 }
