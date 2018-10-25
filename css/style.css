@@ -282,6 +282,11 @@ pre code, a code {
     max-width: 100%;
   }
 }
+@media screen and (max-width: 600px), (max-height: 600px) {
+  * {
+    font-size: max(80%, 12px);
+  }
+}
 /* identifiers */
 .n {
   color: white;
