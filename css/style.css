@@ -323,13 +323,13 @@ pre code, a code {
 }
 
 /* keywords */
-.k, .kd, .kr {
+.k, .kd, .kr, .kn, .cp {
   font-weight: bold;
   color: #ff8ebb;
 }
 
 /* comments */
-.c, .c1, .c2 {
+.c, .c1, .c2, .cm {
   color: #929292;
 }
 
