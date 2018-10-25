@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Tue Oct 23 20:55:35 2018" />
+	<link rel="stylesheet" href="../css/style.css?Thu Oct 25 13:20:04 2018" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>HaxeFlixel Lighting Adventure</title>
 	
@@ -141,11 +141,12 @@ if this was a case of user error or a limitation (or bug) of OpenFL.</p>
 I used nearly-transparent pixels, which are transformed as one would expect them
 to be and which are visually indistinguishable in the result.</p>
 
-<pre><code>var _shadowColor =
-        #if html5     FlxColor.TRANSPARENT 
-        #else     new FlxColor(0x01010101) 
-        #end;
-</code></pre>
+<pre class="highlight lang_Haxe"><code><span></span><span class="kd">var</span> _shadowColor <span class="o">=</span>
+        <span class="cp">#if html5</span>     <span class="n">FlxColor</span><span class="p">.</span><span class="n">TRANSPARENT</span>
+        <span class="cp">#else</span>     <span class="k">new</span> <span class="n">FlxColor</span><span class="p">(</span><span class="mh">0x01010101</span><span class="p">)</span>
+        <span class="cp">#end</span><span class="p">;</span></code>
+</pre>
+
 
 <p>With this <em>single</em> preprocessor switch in place, things work as they should.
 Awesome! I was both thrilled and annoyed.</p>
@@ -155,125 +156,126 @@ Awesome! I was both thrilled and annoyed.</p>
 <p>Below, I am including the entire Lighting class I have written. It is incredibly
 short and simple, but maybe someone will get use out of it.</p>
 
-<pre><code>/*
-@author:  Pennie Quinn
-@created: Mar 13, 2018
+<pre class="highlight lang_Haxe"><code><span></span><span class="cm">/*</span>
+<span class="cm">@author:  Pennie Quinn</span>
+<span class="cm">@created: Mar 13, 2018</span>
 
-    A simple "cutout" lighting system. Works the same on html5, flash, and cpp
-    targets (in my tests thus far).
+<span class="cm">   A simple &quot;cutout&quot; lighting system. Works the same on html5, flash, and cpp</span>
+<span class="cm">   targets (in my tests thus far).</span>
+<span class="cm">   </span>
+<span class="cm">   NOTE: mobile targets have not been tested!</span>
+<span class="cm">   </span>
+<span class="cm">usage:</span>
+<span class="cm">   var lighting = new Lighting();</span>
+<span class="cm">   lighting.alpha = 0.7; // or whatever</span>
+<span class="cm">   //lighting.blue = 20;   // for example</span>
+<span class="cm">   //lighting.color = FlxColor.BLACK;</span>
+<span class="cm">   add(lighting);</span>
+<span class="cm">   ...</span>
+<span class="cm">   ...</span>
+<span class="cm">   var light = new FlxSprite();</span>
+<span class="cm">   light.loadGraphic(...);</span>
+<span class="cm">   lighting.add(light);</span>
+<span class="cm">*/</span>
+<span class="kn">package</span> <span class="nn">paq</span><span class="p">;</span>
 
-    NOTE: mobile targets have not been tested!
+<span class="kn">import</span> <span class="nn">openfl</span><span class="p">.</span><span class="nn">geom</span><span class="p">.</span><span class="nn">Rectangle</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">openfl</span><span class="p">.</span><span class="nn">geom</span><span class="p">.</span><span class="nn">ColorTransform</span><span class="p">;</span>
 
-usage:
-    var lighting = new Lighting();
-    lighting.alpha = 0.7; // or whatever
-    //lighting.blue = 20;   // for example
-    //lighting.color = FlxColor.BLACK;
-    add(lighting);
-    ...
-    ...
-    var light = new FlxSprite();
-    light.loadGraphic(...);
-    lighting.add(light);
-*/
-package paq;
-
-import openfl.geom.Rectangle;
-import openfl.geom.ColorTransform;
-
-import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup;
-import flixel.util.FlxColor;
+<span class="kn">import</span> <span class="nn">flixel</span><span class="p">.</span><span class="nn">FlxG</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">flixel</span><span class="p">.</span><span class="nn">FlxObject</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">flixel</span><span class="p">.</span><span class="nn">FlxSprite</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">flixel</span><span class="p">.</span><span class="nn">group</span><span class="p">.</span><span class="nn">FlxGroup</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">flixel</span><span class="p">.</span><span class="nn">util</span><span class="p">.</span><span class="nn">FlxColor</span><span class="p">;</span>
 
 
-class Lighting extends FlxGroup
-{
-    var _shadowColor =
-        #if html5     FlxColor.TRANSPARENT 
-        #else     new FlxColor(0x01010101) 
-        #end;
+<span class="kd">class</span> <span class="n">Lighting</span> <span class="kd">extends</span> <span class="n">FlxGroup</span>
+<span class="p">{</span>
+    <span class="kd">var</span> _shadowColor <span class="o">=</span>
+        <span class="cp">#if html5</span>     <span class="n">FlxColor</span><span class="p">.</span><span class="n">TRANSPARENT</span> 
+        <span class="cp">#else</span>     <span class="k">new</span> <span class="n">FlxColor</span><span class="p">(</span><span class="mh">0x01010101</span><span class="p">)</span> 
+        <span class="cp">#end</span><span class="p">;</span>
+        
+    <span class="kd">var</span> _colorTransform <span class="o">=</span> <span class="k">new</span> <span class="n">ColorTransform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">255</span><span class="p">);</span>
+    
+    <span class="kd">var</span> _boundsRect<span class="p">:</span><span class="n">Rectangle</span><span class="p">;</span>
+    <span class="kd">var</span> _shadow<span class="p">:</span><span class="n">FlxSprite</span><span class="p">;</span>
+    
+    <span class="c1">// 0 to 1.0</span>
+    <span class="kd">public</span> <span class="kd">var</span> alpha<span class="p">(</span><span class="k">get</span><span class="p">,</span> <span class="k">set</span><span class="p">):</span><span class="n">Float</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">get_alpha</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_shadow</span><span class="p">.</span><span class="n">alpha</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kd">function</span> <span class="nf">set_alpha</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_shadow</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+    
+    <span class="c1">// -255 to 255</span>
+    <span class="kd">public</span> <span class="kd">var</span> red<span class="p">(</span><span class="k">get</span><span class="p">,</span> <span class="k">set</span><span class="p">):</span><span class="n">Float</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">get_red</span><span class="p">(){</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">redOffset</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kd">function</span> <span class="nf">set_red</span><span class="p">(</span><span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">redOffset</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+    
+    <span class="c1">// -255 to 255</span>
+    <span class="kd">public</span> <span class="kd">var</span> green<span class="p">(</span><span class="k">get</span><span class="p">,</span> <span class="k">set</span><span class="p">):</span><span class="n">Float</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">get_green</span><span class="p">(){</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">greenOffset</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kd">function</span> <span class="nf">set_green</span><span class="p">(</span><span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">greenOffset</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+    
+    <span class="c1">// -255 to 255</span>
+    <span class="kd">public</span> <span class="kd">var</span> blue<span class="p">(</span><span class="k">get</span><span class="p">,</span> <span class="k">set</span><span class="p">):</span><span class="n">Float</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">get_blue</span><span class="p">(){</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">blueOffset</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kd">function</span> <span class="nf">set_blue</span><span class="p">(</span><span class="n">x</span><span class="p">){</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">blueOffset</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="p">}</span>
+    
+    <span class="kd">public</span> <span class="kd">var</span> color<span class="p">(</span><span class="k">get</span><span class="p">,</span> <span class="k">set</span><span class="p">):</span><span class="n">FlxColor</span><span class="p">;</span>
+    <span class="kd">function</span> <span class="nf">get_color</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">color</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kd">function</span> <span class="nf">set_color</span><span class="p">(</span><span class="n">x</span><span class="p">:</span><span class="n">FlxColor</span><span class="p">):</span><span class="n">FlxColor</span>
+    <span class="p">{</span> 
+        <span class="n">_colorTransform</span><span class="p">.</span><span class="n">redOffset</span>   <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">red</span><span class="p">;</span>
+        <span class="n">_colorTransform</span><span class="p">.</span><span class="n">greenOffset</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">green</span><span class="p">;</span>
+        <span class="n">_colorTransform</span><span class="p">.</span><span class="n">blueOffset</span>  <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">blue</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">_colorTransform</span><span class="p">.</span><span class="n">color</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="kd">override</span> <span class="kd">public</span> <span class="kd">function</span> <span class="nf">new</span><span class="p">(?</span><span class="n">capacity</span><span class="p">:</span><span class="n">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kd">var</span> w <span class="o">=</span> <span class="n">FlxG</span><span class="p">.</span><span class="n">width</span><span class="p">;</span>
+        <span class="kd">var</span> h <span class="o">=</span> <span class="n">FlxG</span><span class="p">.</span><span class="n">height</span><span class="p">;</span>
+        
+        <span class="n">_shadow</span> <span class="o">=</span> <span class="k">new</span> <span class="n">FlxSprite</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">scrollFactor</span><span class="p">.</span><span class="n">set</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">allowCollisions</span> <span class="o">=</span> <span class="n">FlxObject</span><span class="p">.</span><span class="n">NONE</span><span class="p">;</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">moves</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">immovable</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+        
+        <span class="n">_boundsRect</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Rectangle</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">);</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">makeGraphic</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">_shadowColor</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+        
+        <span class="n">super</span><span class="p">();</span>
+    <span class="p">}</span>
+    
+    <span class="kd">function</span> <span class="nf">_drawLight</span><span class="p">(</span><span class="n">light</span><span class="p">:</span><span class="n">FlxSprite</span><span class="p">):</span><span class="n">Void</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">light</span><span class="p">.</span><span class="n">graphic</span> <span class="o">==</span> <span class="kc">null</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span> <span class="c1">// necessary?</span>
+        <span class="kd">var</span> pos <span class="o">=</span> <span class="n">light</span><span class="p">.</span><span class="n">getScreenPosition</span><span class="p">();</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">stamp</span><span class="p">(</span><span class="n">light</span><span class="p">,</span> <span class="n">Std</span><span class="p">.</span><span class="n">int</span><span class="p">(</span><span class="n">pos</span><span class="p">.</span><span class="n">x</span><span class="p">),</span> <span class="n">Std</span><span class="p">.</span><span class="n">int</span><span class="p">(</span><span class="n">pos</span><span class="p">.</span><span class="n">y</span><span class="p">));</span>
+    <span class="p">}</span>
+    
+    <span class="kd">override</span> <span class="kd">public</span> <span class="kd">function</span> <span class="nf">draw</span><span class="p">():</span><span class="n">Void</span>
+    <span class="p">{</span>
+        <span class="c1">// clear the shadow map</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">pixels</span><span class="p">.</span><span class="n">fillRect</span><span class="p">(</span><span class="n">_boundsRect</span><span class="p">,</span> <span class="n">_shadowColor</span><span class="p">);</span>
+        
+        <span class="c1">// draw the lights into the shadow map</span>
+        <span class="k">this</span><span class="p">.</span><span class="n">forEachOfType</span><span class="p">(</span><span class="n">FlxSprite</span><span class="p">,</span> <span class="n">_drawLight</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+        
+        <span class="c1">// flip _shadow&#39;s alpha channel, making lights a cutout sprite</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">pixels</span><span class="p">.</span><span class="n">colorTransform</span><span class="p">(</span><span class="n">_boundsRect</span><span class="p">,</span> <span class="n">_colorTransform</span><span class="p">);</span>
+        
+        <span class="c1">// force update for draw -- necessary?</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">drawFrame</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span> 
+        
+        <span class="c1">// draw the shadow map</span>
+        <span class="n">_shadow</span><span class="p">.</span><span class="n">draw</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span></code>
+</pre>
 
-    var _colorTransform = new ColorTransform(0,0,0,-1,0,0,0,255);
-
-    var _boundsRect:Rectangle;
-    var _shadow:FlxSprite;
-
-    // 0 to 1.0
-    public var alpha(get, set):Float;
-    function get_alpha() { return _shadow.alpha; }
-    function set_alpha(x) { return _shadow.alpha = x; }
-
-    // -255 to 255
-    public var red(get, set):Float;
-    function get_red(){ return _colorTransform.redOffset; }
-    function set_red(x){ return _colorTransform.redOffset = x; }
-
-    // -255 to 255
-    public var green(get, set):Float;
-    function get_green(){ return _colorTransform.greenOffset; }
-    function set_green(x){ return _colorTransform.greenOffset = x; }
-
-    // -255 to 255
-    public var blue(get, set):Float;
-    function get_blue(){ return _colorTransform.blueOffset; }
-    function set_blue(x){ return _colorTransform.blueOffset = x; }
-
-    public var color(get, set):FlxColor;
-    function get_color() { return _colorTransform.color; }
-    function set_color(x:FlxColor):FlxColor
-    { 
-        _colorTransform.redOffset   = x.red;
-        _colorTransform.greenOffset = x.green;
-        _colorTransform.blueOffset  = x.blue;
-        return _colorTransform.color;
-    }
-
-    override public function new(?capacity:Int = 0)
-    {
-        var w = FlxG.width;
-        var h = FlxG.height;
-
-        _shadow = new FlxSprite(0,0);
-        _shadow.scrollFactor.set(0,0);
-        _shadow.allowCollisions = FlxObject.NONE;
-        _shadow.moves = false;
-        _shadow.immovable = true;
-
-        _boundsRect = new Rectangle(0, 0, w, h);
-        _shadow.makeGraphic(w, h, _shadowColor, true);
-        _shadow.alpha = 1;
-
-        super();
-    }
-
-    function _drawLight(light:FlxSprite):Void
-    {
-        if (light.graphic == null) return; // necessary?
-        var pos = light.getScreenPosition();
-        _shadow.stamp(light, Std.int(pos.x), Std.int(pos.y));
-    }
-
-    override public function draw():Void
-    {
-        // clear the shadow map
-        _shadow.pixels.fillRect(_boundsRect, _shadowColor);
-
-        // draw the lights into the shadow map
-        this.forEachOfType(FlxSprite, _drawLight, true);
-
-        // flip _shadow's alpha channel, making lights a cutout sprite
-        _shadow.pixels.colorTransform(_boundsRect, _colorTransform);
-
-        // force update for draw -- necessary?
-        _shadow.drawFrame(true); 
-
-        // draw the shadow map
-        _shadow.draw();
-    }
-}
-</code></pre>
 
 <h2 id="in-action">In Action </h2>
 
@@ -321,7 +323,7 @@ number of lights will remain quite small, so I haven&rsquo;t bothered and likely
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Tue Oct 23 20:55:35 2018
+			Generated on Thu Oct 25 13:20:04 2018
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>

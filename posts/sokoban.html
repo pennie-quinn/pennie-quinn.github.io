@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Tue Oct 23 20:55:35 2018" />
+	<link rel="stylesheet" href="../css/style.css?Thu Oct 25 13:20:04 2018" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>I made a Sokoban clone</title>
 	
@@ -88,11 +88,12 @@ for them. So I wrote a file, just for SWIG, defining C functions to wrap my
 macros, which SWIG then wraps to Lua with prettier names. Yes, that is convoluted.
 No, it isn&rsquo;t pretty. Example:</p>
 
-<pre><code>double _macro_clamp    (f64 v, f64 a, f64 b)
-{
-    return clamp(v,a,b);
-}
-</code></pre>
+<pre class="highlight lang_C"><code><span></span><span class="kt">double</span> <span class="nf">_macro_clamp</span>    <span class="p">(</span><span class="n">f64</span> <span class="n">v</span><span class="p">,</span> <span class="n">f64</span> <span class="n">a</span><span class="p">,</span> <span class="n">f64</span> <span class="n">b</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">clamp</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
+<span class="p">}</span></code>
+</pre>
+
 
 <h2>A Test Project </h2>
 
@@ -199,12 +200,13 @@ upon completion.</p>
 
 <p>To transition to a new screen looks something like this:</p>
 
-<pre><code>transition:start('out', function()
-    screen.pop() -- remove the current screen, for example
-    screen.push(newscr)
-    transition:start('in')
-end)
-</code></pre>
+<pre class="highlight lang_Lua"><code><span></span><span class="n">transition</span><span class="p">:</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="kr">function</span><span class="p">()</span>
+    <span class="n">screen</span><span class="p">.</span><span class="n">pop</span><span class="p">()</span> <span class="c1">-- remove the current screen, for example</span>
+    <span class="n">screen</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">newscr</span><span class="p">)</span>
+    <span class="n">transition</span><span class="p">:</span><span class="n">start</span><span class="p">(</span><span class="s1">&#39;in&#39;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span></code>
+</pre>
+
 
 <h2>Lua Binding Bindings </h2>
 
@@ -220,18 +222,20 @@ and whatnot.</p>
 
 <p>This practice turned code like this:</p>
 
-<pre><code>if toast.btn(toast.btn_start).state == toast_ButtonPressed
-   or toast.key_GetState(--[[some input I'm trying out]]) == 1  
-then
-    local u = sfx['foo.wav'].handle
-    toast.mix_PlayChunk(toast.SoundMixer, u, 1, 1, 0)
-end
-</code></pre>
+<pre class="highlight lang_Lua"><code><span></span><span class="kr">if</span> <span class="n">toast</span><span class="p">.</span><span class="n">btn</span><span class="p">(</span><span class="n">toast</span><span class="p">.</span><span class="n">btn_start</span><span class="p">).</span><span class="n">state</span> <span class="o">==</span> <span class="n">toast_ButtonPressed</span> 
+    <span class="ow">or</span> <span class="n">toast</span><span class="p">.</span><span class="n">key_GetState</span><span class="p">(</span><span class="cm">--[[some input I&#39;m trying out]]</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> 
+<span class="kr">then</span>
+    <span class="kd">local</span> <span class="n">u</span> <span class="o">=</span> <span class="n">sfx</span><span class="p">[</span><span class="s1">&#39;foo.wav&#39;</span><span class="p">].</span><span class="n">handle</span>
+    <span class="n">toast</span><span class="p">.</span><span class="n">mix_PlayChunk</span><span class="p">(</span><span class="n">toast</span><span class="p">.</span><span class="n">SoundMixer</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="kr">end</span></code>
+</pre>
+
 
 <p>into code like this:</p>
 
-<pre><code>if input.Start() then audio.playSE('foo') end
-</code></pre>
+<pre class="highlight lang_Lua"><code><span></span><span class="kr">if</span> <span class="n">input</span><span class="p">.</span><span class="n">Start</span><span class="p">()</span> <span class="kr">then</span> <span class="n">audio</span><span class="p">.</span><span class="n">playSE</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span> <span class="kr">end</span></code>
+</pre>
+
 
 <p>With the added benefit of better error-checking, since I only had to type it <em>once</em>
 in the wrapper.</p>
@@ -314,7 +318,7 @@ turn most <code>toast</code> modules into <code>paq_*.h</code> libraries, which 
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Tue Oct 23 20:55:35 2018
+			Generated on Thu Oct 25 13:20:04 2018
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>

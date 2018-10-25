@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Tue Oct 23 20:55:34 2018" />
+	<link rel="stylesheet" href="../css/style.css?Thu Oct 25 13:20:04 2018" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>A New Blog Again... Again!</title>
 	
@@ -71,6 +71,80 @@
 
 <p>So I went ahead and set that up and used it to rewrite my blog! Looking at old code of <code>leafo.net</code> for usage examples (scant docs!), I ended up trying <a href="http://sass-lang.com">SASS</a> as well, which is <em>also</em> bae.</p>
 
+<p>Being a lethargic, depressive person (most of the time), I realized I probably wouldn’t update the blog, even with the rewrite, if I had to maintain the feed file and copy/paste metadata to new posts. So I began writing a <code>bash</code> script to create new posts. This is what I had done for previous iterations of the blog&mdash;use <code>sed</code> and a template file and blahblahblah.</p>
+
+<p>Then I realized it would be simpler and better to just write <em>that</em> in MoonScript, too. It took a few minutes and works fine:</p>
+
+<pre class="highlight lang_MoonScript"><code><span></span><span class="n">args</span><span class="o">=</span><span class="kt">{</span><span class="o">...</span><span class="kt">}</span>
+
+<span class="k">if</span> <span class="o">#</span><span class="n">args</span> <span class="o">&lt;</span> <span class="mi">2</span>
+    <span class="nb">print</span><span class="s1">&#39;</span><span class="s">usage:</span><span class="se">\n\t</span><span class="s">moon post.moon my-post &quot;My Dope Post&quot;</span><span class="s1">&#39;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+
+<span class="n">feed</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">feed_posts.moon</span><span class="s2">&quot;</span>
+
+<span class="n">is_md</span> <span class="o">=</span> <span class="kt">(</span><span class="n">s</span><span class="kt">)</span> <span class="nf">-&gt;</span> <span class="o">#</span><span class="n">s</span><span class="o">&gt;</span><span class="mi">3</span> <span class="k">and</span> <span class="n">s</span><span class="o">\</span><span class="n">sub</span><span class="kt">(</span><span class="o">#</span><span class="n">s</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="o">#</span><span class="n">s</span><span class="kt">)</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="s">.md</span><span class="s1">&#39;</span>
+<span class="n">no_md</span> <span class="o">=</span> <span class="kt">(</span><span class="n">s</span><span class="kt">)</span> <span class="nf">-&gt;</span> <span class="n">s</span><span class="o">\</span><span class="n">sub</span><span class="kt">(</span><span class="mi">1</span><span class="p">,</span><span class="o">#</span><span class="n">s</span><span class="o">-</span><span class="mi">3</span><span class="kt">)</span>
+
+<span class="n">title</span> <span class="o">=</span> <span class="n">args</span><span class="kt">[</span><span class="mi">2</span><span class="kt">]</span>
+<span class="n">infile</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="s">posts/</span><span class="s2">&quot;</span> <span class="o">..</span> <span class="n">args</span><span class="kt">[</span><span class="mi">1</span><span class="kt">]</span><span class="o">\</span><span class="n">lower</span><span class="o">!</span>
+<span class="n">infile</span> <span class="o">..=</span> <span class="s1">&#39;</span><span class="s">.md</span><span class="s1">&#39;</span> <span class="n">unless</span> <span class="n">is_md</span> <span class="n">infile</span>
+
+<span class="n">header</span> <span class="o">=</span> <span class="s">[[</span>
+<span class="s">{</span>
+<span class="s">    title: &quot;%s&quot;</span>
+<span class="s">    date: &quot;%s&quot;</span>
+<span class="s">    is_a: &quot;blog_post&quot;</span>
+<span class="s">}</span>
+
+<span class="s">]]</span><span class="o">\</span><span class="n">format</span> <span class="n">title</span><span class="p">,</span> <span class="nb">os.date</span> <span class="s2">&quot;</span><span class="s">%a, %b %d, %Y</span><span class="s2">&quot;</span>
+
+<span class="n">entry</span> <span class="o">=</span> <span class="s">[[</span>
+<span class="s">    {</span>
+<span class="s">        date:  date %s</span>
+<span class="s">        title: &quot;%s&quot;</span>
+<span class="s">        link:  &quot;https://pennie-quinn.github.io/posts/%s.html&quot;</span>
+<span class="s">        description: &quot;&quot;</span>
+<span class="s">    }</span>
+<span class="s">]]</span><span class="o">\</span><span class="n">format</span> <span class="nb">os.date</span><span class="kt">(</span><span class="s2">&quot;</span><span class="s">%Y, %m, %d</span><span class="s2">&quot;</span><span class="kt">)</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">no_md</span> <span class="n">infile</span>
+
+<span class="c1">-- check if file already exists</span>
+<span class="n">overwrite</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="k">with</span> <span class="n">file</span><span class="o">=</span><span class="nb">io.open</span> <span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">r</span><span class="s2">&quot;</span>
+    <span class="k">if</span> <span class="n">file</span>
+        <span class="o">\</span><span class="n">close</span><span class="o">!</span>
+        <span class="nb">print</span> <span class="s2">&quot;</span><span class="s">#{infile} already exists! Do you want to overwrite it? (y/N)</span><span class="s2">&quot;</span>
+        <span class="k">with</span> <span class="n">r</span> <span class="o">=</span> <span class="nb">io.read</span><span class="o">!</span> <span class="k">do</span> <span class="k">return</span> <span class="n">unless</span> <span class="kt">(</span><span class="n">r</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="s">y</span><span class="s1">&#39;</span> <span class="k">or</span> <span class="n">r</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="s">Y</span><span class="s1">&#39;</span><span class="kt">)</span>
+        <span class="n">overwrite</span> <span class="o">=</span> <span class="kc">true</span>
+
+<span class="c1">-- write the file</span>
+<span class="k">with</span> <span class="n">file</span><span class="o">=</span><span class="nb">io.open</span> <span class="n">infile</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">w</span><span class="s2">&quot;</span>
+    <span class="o">\</span><span class="n">write</span> <span class="n">header</span>
+    <span class="o">\</span><span class="n">close</span><span class="o">!</span>
+
+<span class="c1">-- add the post to feed_posts.moon</span>
+<span class="k">if</span> <span class="k">not</span> <span class="n">overwrite</span>
+    <span class="n">local</span> <span class="n">lines</span>
+    <span class="k">with</span> <span class="nb">io.open</span> <span class="n">feed</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">r</span><span class="s2">&quot;</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="kt">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="k">in</span> <span class="o">\</span><span class="n">lines</span><span class="o">!</span><span class="kt">]</span>
+        <span class="o">\</span><span class="n">close</span><span class="o">!</span>
+    <span class="k">with</span> <span class="nb">io.open</span> <span class="n">feed</span><span class="p">,</span> <span class="s2">&quot;</span><span class="s">w+</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="o">#</span><span class="n">lines</span><span class="o">-</span><span class="mi">1</span> <span class="k">do</span> <span class="o">\</span><span class="n">write</span> <span class="n">lines</span><span class="kt">[</span><span class="n">i</span><span class="kt">]</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="o">\</span><span class="n">write</span> <span class="n">entry</span>
+        <span class="o">\</span><span class="n">write</span> <span class="n">lines</span><span class="kt">[</span><span class="o">#</span><span class="n">lines</span><span class="kt">]</span>
+        <span class="o">\</span><span class="n">close</span><span class="o">!</span>
+
+<span class="c1">-- open the post in Focused</span>
+<span class="nb">os.execute</span> <span class="s2">&quot;</span><span class="s">open -a Focused </span><span class="se">\&quot;</span><span class="s">$(pwd)/#{infile}</span><span class="se">\&quot;</span><span class="s2">&quot;</span></code>
+</pre>
+
+
+<p>So, now, I can just say:
+<pre class="highlight lang_bash"><code><span></span>$ moon post.moon foo “Bar”</code>
+</pre></p>
+
+<p>I <em>did</em> go ahead and wrap it in a <code>bash</code> script, so I can say <code>./post foo “Bar”</code>, but that’s just excessive laziness. ;)</p>
+
 <p>New langs, new look, easier maintenance + posting. Nice!</p>
 </div>
 
@@ -94,7 +168,7 @@
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Tue Oct 23 20:55:34 2018
+			Generated on Thu Oct 25 13:20:04 2018
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>
