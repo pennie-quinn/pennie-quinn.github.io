@@ -113,7 +113,7 @@ a:hover {
   border: 1px solid #dadada;
   box-shadow: 2px 2px 16px #ddd;
   display: block;
-  max-width: min(512px, 80%);
+  max-width: min(512px, 100%);
   margin: auto;
 }
 .inner img.inline {
