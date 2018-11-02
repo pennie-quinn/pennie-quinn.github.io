@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="../css/style.css?Fri Nov  2 10:57:43 2018" />
+	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
+	<title>My Konmari Experience 5: Digital Life</title>
+	
+	<script type="text/javascript">
+		window.site_root = "..";
+	</script>
+	
+	<script type="text/javascript">
+  if (window.location.hostname != "localhost") {
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-127983421-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  }
+</script>
+</head>
+
+<body class="nice_fonts">
+	
+<div class="sidebar">
+	<a href="../index.html" title="pennie.net">
+		<img class="logo" src="../img/devnull.svg" alt="pennie.net" />
+	</a>
+	
+	<p>Pennie's ramblings. Feel free to <a href="mailto:pennie.ada.quinn@gmail.com">email me</a>.</p>
+	
+	<div class="sidebar_icons">
+		<a href="mailto:pennie.ada.quinn@gmail.com"><img src="../img/icon/mail.svg" alt="email" /></a>
+		<a href="https://twitter.com/transmutrix"><img src="../img/icon/twitter.svg" alt="twitter" /></a>
+		<a href="https://github.com/pennie-quinn"><img src="../img/icon/github.svg" alt="github" /></a>
+	</div>
+	
+	<br>
+	
+	<p>Recent Posts</p>
+	<p><a href='https://pennie-quinn.github.io/posts/konmari-5.html'>My Konmari Experience 5: Digital Life</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/konmari-4.html'>My Konmari Experience 4: Peace & Quiet</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/konmari-3.html'>My Konmari Experience 3: Overwhelm</a></p>
+
+</div>
+	
+<div class="main-column">
+
+<div class="post-header">
+	<h1>My Konmari Experience 5: Digital Life</h1>
+	<div class="post-meta">
+		Posted
+		<span class: "post-date">Wed, Oct 31, 2018</span>
+		by Pennie (<a href="https://twitter.com/transmutrix">@transmutrix</a>)
+	</div>
+</div>
+
+<div class="inner post-body"><ul>
+<li><a href="../posts/konmari-1.html">Part 1: Clothes &amp; Gifts</a></li>
+<li><a href="../posts/konmari-2.html">Part 2: Books, Papers, &amp; Mementos</a></li>
+<li><a href="../posts/konmari-3.html">Part 3: Overwhelm</a></li>
+<li><a href="../posts/konmari-4.html">Part 4: Peace &amp; Quiet</a></li>
+</ul>
+
+
+<p>The final step of my Konmari journey is here: digital stuff! Digital belongings, of course, work a bit differently from tangible ones, but I think the general principles of Konmari will apply quite well, and I think that digital &ldquo;clutter&rdquo; can be as harmful as the traditional type.</p>
+
+<p>So, how do we go about this? Well, for my tangible possessions, I made a checklist in <a href="http://happenapps.com">Quiver</a> to keep myself on track:</p>
+
+<p><img src="../img/konmari/00.png" alt="my konmari checklist" />
+<p class="caption">my konmari checklist</p></p>
+
+<p>So, it made sense to do the same for digital stuff. I created a &ldquo;main checklist&rdquo; with the <em>categories</em> of items to discard, along with separate lists per-computer and per-service, like this:</p>
+
+<p><img src="../img/konmari/01.png" alt="my digital checklist" />
+<p class="caption">my digital checklist</p></p>
+
+<p>As with traditional Konmari, I tried to order the categories by difficulty-of-pruning. Applications come first because I use many <em>free</em> ones, which will be easily replaceable should I discard one prematurely. Additionally, I documented the free space on my machines and storage services before I started&mdash;numbers are satisfying! </p>
+
+<p>My Surface is much more cluttered than my Macbook, so I used WinDirStat to help along the way. I also used <code>bash</code> extensively for categories like &ldquo;documents&rdquo; and &ldquo;photos&rdquo;, where file extensions are helpful and directory structure is&rsquo;t as important: <code>mv foo/bar/*.png Desktop/Konmari/Photos</code> and such. Here&rsquo;s how things went, and what I learned along the way:</p>
+
+<p><ul><li><a href="#the-process">The Process</a></li>
+<ul><li><a href="#the-process/applications">Applications</a></li>
+<li><a href="#the-process/code">Code</a></li>
+<li><a href="#the-process/documents">Documents</a></li>
+<li><a href="#the-process/videos">Videos</a></li>
+<li><a href="#the-process/photos">Photos</a></li>
+<li><a href="#the-process/feeds">Feeds</a></li>
+<li><a href="#the-process/email">Email</a></li>
+<li><a href="#the-process/browsers">Browsers</a></li>
+<li><a href="#the-process/cache-logs">Cache / Logs</a></li>
+<li><a href="#the-process/external-storage">External Storage</a></li></ul>
+<li><a href="#the-results">The Results</a></li></ul></p>
+
+<h2 id="the-process">The Process</h2>
+
+<h3 id="the-process/applications">Applications</h3>
+
+<p>On my Macbook, this was quick and painless&mdash;most removed programs were <em>both</em> redundant and free, and had been installed while trying to find a good utility. Gif-making software I didn&rsquo;t use, game engines I was trying out (and, generally, found to be more trouble than they're worth for a CLI enthusiast like me), etc. Some preinstalled apps can&rsquo;t be removed, such as Chess and DVD Player. My Macbook doesn&rsquo;t even <em>have</em> a disk drive!</p>
+
+<p>On my Surface, some effort was required: I've installed <em>lots</em> of stuff since 2015:</p>
+
+<ul>
+<li>Emulators that crashed all the time. </li>
+<li>Blizzard&rsquo;s excuse for a remastered <em>Starcraft: Brood War</em>. </li>
+<li>Buildbox, Stencyl, Unity, &amp; XNA.</li>
+<li>Redundant versions of Visual Studio.</li>
+<li>A Visual Studio extension for COBOL, which I used exactly <em>once</em>, for a school assignment. </li>
+<li>LEGO Digital Designer, which was discontinued <em>before</em> I installed it! </li>
+<li>A program for loading WAVs onto musical greeting cards from a specific company&mdash;which doesn&rsquo;t work in Windows 10.</li>
+<li>Several paint programs I no longer use after being seduced by <a href="https://www.krita.org">Krita</a>.</li>
+</ul>
+
+
+<p>Just <em>loads</em> of stuff.</p>
+
+<h3 id="the-process/code">Code</h3>
+
+<p>Most of my (recent) programming work lives in Dropbox, so this was a win across devices. I ditched repos I have starred on Github that I'm not working with lately (sorting by Last Modified is <em>very</em> helpful!) </p>
+
+<p>The Surface, however, had <code>C:/Projects/</code>, which over the years had become filled to bursting with cruft. I broke the rules here: I didn&rsquo;t want to wait for 100,000+ items to be moved into a <code>code/</code> directory before going through them. Instead, I moved items I decided to keep into my new <code>code/</code>, and removed the others. WinDirStat helped me identify stray audio files, .git directories, and project duplicates.</p>
+
+<h3 id="the-process/documents">Documents</h3>
+
+<p>Moving <em>all</em> PDFs and <em>all</em> text files into one directory was more useful than expected. Suddenly, it was very clear how many redundant copies I had. I sorted the view by file size, ensuring that I didn&rsquo;t mess up the order by opening and renaming kept items. Then, important documents were renamed as I went: <code>YYYY-MM-foo-bar.pdf</code></p>
+
+<h3 id="the-process/videos">Videos</h3>
+
+<p>There were less than I thought, it turns out. Many captures of projects were tossed, and only the best of them kept. Files were renamed like this: <code>pq93-edit-gfx.mp4</code> so everything can be sorted by name.</p>
+
+<h3 id="the-process/photos">Photos</h3>
+
+<p>Photos were, by far, the most difficult files to deal with, and not because they are sentimental, but because of the sheer <em>volume</em>. I take <em>way</em> too many photos with my phone, most of them redundant or for one-time use in Messenger or Discord. It took <em>ages</em> so sort and cull my photos. I need to be more conservative with my phone camera so that this doesn&rsquo;t happen again.</p>
+
+<h3 id="the-process/feeds">Feeds</h3>
+
+<p>Facebook was a piece of cake, as I made a new one fairly recently, and only added a few friends and pages. Still, I regularly find myself needing to take breaks from it to avoid overwhelm&mdash;the Kavanaugh stuff filled my feed for <em>weeks</em>&mdash;so I did take inventory and remove most of the pages, and I bumped most friends down to &ldquo;important posts&rdquo;.</p>
+
+<p>I followed 596 Twitter accounts&mdash;that&rsquo;s a lot! And I followed most of them because I really <em>enjoy</em> their tweets. However, it&rsquo;s rare that I see any tweets from specific accounts, because of the sheer number of tweets available. So, I unfollowed some by these rules:</p>
+
+<ul>
+<li>company or product accounts</li>
+<li>youtubers that youtube already notifies me about</li>
+<li>bots that don&rsquo;t &ldquo;spark joy&rdquo; any more</li>
+<li>"stressful" accounts</li>
+<li>bands I follow elsewhere</li>
+</ul>
+
+
+<p>Two passes over the list brought the count down to 482, which isn&rsquo;t great, but is progress.</p>
+
+<h3 id="the-process/email">Email</h3>
+
+<p>Clicked &ldquo;unsubscribe&rdquo; in countless spam emails. Amazon &amp; Walmart are particularly bad at respecting your email preferences. Steam sale? Don&rsquo;t care. LinkedIn? No one <em>ever</em> cares unless it&rsquo;s a direct message. I don&rsquo;t care about so-and-so&rsquo;s work anniversary and neither do they. I don&rsquo;t care if someone shared an article. I don&rsquo;t care that I have a &ldquo;suggested connection&rdquo; for some douche I've said &ldquo;no&rdquo; to at least five times already.</p>
+
+<p>Also, I had accumulated a <em>vast</em> pile of flagged emails, many of them over a year old. At the end, I only had two flagged messages left: one for next year&rsquo;s FAFSA, and one from an Indeed recruiter.</p>
+
+<h3 id="the-process/browsers">Browsers</h3>
+
+<p>In Safari, I had several hundred unsorted bookmarks. I went through them, one by one&mdash;most would have been better suited to the Reading List when I originally found them, but now were simply deleted. Some items were confusing: a list of cheeses on Wikipedia, for example. Some links were broken, too. At the end, 8 bookmarks remained, most related to a current project.</p>
+
+<p>One perk of using a seven year old MacBook Air is that I <em>can&rsquo;t get away with lots of tabs</em>. It&rsquo;s impossible to accumulate them, because modern web pages can scarcely work with a &ldquo;mere&rdquo; 2GB RAM and an old i5, even with a decent browser.</p>
+
+<p>In contrast, Vivaldi had 2 persistent windows with about 20 tabs between them! In keeping with this, I had a massive collection of bookmarks there, too, some even organized into <em>subfolders</em> with tens of items. Why have I bookmarked so many sites that I can <em>remember</em> offhand? The entire point of bookmarks is to <em>find your way back</em> to something.</p>
+
+<p>On my first pass through, I deleted 438 of the bookmarks and removed <em>all</em> of the folders. I created a new folder, called &ldquo;Reading List&rdquo;, where I placed items I wanted to read before deleting them. Work bookmarks also got a folder. All told, I kept 63 bookmarks.</p>
+
+<h3 id="the-process/cache-logs">Cache / Logs</h3>
+
+<p>All the &ldquo;classic&rdquo; utilities for this cost money now. MacClean used to be a free alternative to CleanMyMac&mdash;now it&rsquo;s &#36;20 per year, which, while inexpensive, is unjustifiable right <em>now</em>. On the Surface end of it, CCleaner also costs money these days. What to do?</p>
+
+<p>I could manually clean up caches and logs, or write a script to do it. But what if I delete the wrong thing? How can I tell what&rsquo;s safe to ditch? It&rsquo;s going to be a &ldquo;no&rdquo; from me, dog. A quick search of the App Store found <a href="https://itunes.apple.com/us/app/disk-cleaner-free-hd-space/id970246631?mt=12"><em>Disk Cleaner</em></a>, a highly-rated cache buster, on sale for &#36;3. <em>Nice.</em> As for Windows, I quickly found <a href="https://www.bleachbit.org"><em>BleachBit</em></a>, which remains FOSS.</p>
+
+<h3 id="the-process/external-storage">External Storage</h3>
+
+<p>I have a 1TB ADATA external HDD, which since its purchase, had become a complete wreck. When my Surface had more games on it, like Skyrim and Borderlands 2, space was scant, and my solution at the time was to pile seldom-to-never-used files into the ADATA. Bitlocker'd, too, to keep my miscellaneous and completely unimportant files annoyingly secure.</p>
+
+<p>Unlabeled recorded phone calls of someone no longer in my life, threatening violence (legal to do in Virginia, by the way). ~65GB of tv series, which I can readily access on Netflix any time <em>and</em> have already watched. A massive archive of all the data from my <em>previous</em> Facebook profile. ~15GB of sound effects I used <em>a few of, one time, for a project</em>. Old Unity projects. <em>More photos</em>.</p>
+
+<h2 id="the-results">The Results</h2>
+
+<p></p>
+
+<table>
+    <tr><th>place</th><th>free before</th><th>free now</th></tr>
+    <tr class='r'><td>macbook</td><td>19.63 GB</td><td>20.15 GB</td></tr>
+    <tr class='r'><td>surface</td><td>35.90 GB</td><td>91.90 GB</td></tr>
+    <tr class='r'><td>external</td><td>599.00 GB</td><td>801.60 GB</td></tr>
+    <tr class='r'><td>dropbox</td><td>661.50 MB</td><td>823.30 MB</td></tr>
+    <tr class='r'><td>iCloud</td><td>(unsure)</td><td>35.78 GB</td></tr>
+    <tr class='r'><td>google drive</td><td>1.50 GB</td><td>1.50 GB</td></tr>
+</table>
+
+
+<p>Altogether, the Macbook was done in about a half hour, and most of my time was spent on the Surface and storage services, where I needed to do a <em>proper</em> Konmari, by putting items into central directories to go through them. My files are organized, my machines are cleaner, and I no longer feel nauseated when I need to find my tax returns or syllabi.</p>
+
+<p>Going into Konmari for a second time, with a better mindset, and mentally prepared to put in the necessary work, I had much better results than before. I finally feel at peace in my space, and when using my computers. I highly recommend <a href="https://amzn.to/2yKsBll"><em>The Life Changing Magic of Tidying Up</em></a> to anyone sensitive to their environment, who finds themselves struggling with clutter and overwhelm.</p>
+
+<p>Thank you for reading, and see you next time. :)</p>
+</div>
+
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script>
+	var disqus_config = function () {
+		//this.page.url = PAGE_URL;
+		this.page.identifier = "My Konmari Experience 5: Digital Life" + "Wed, Oct 31, 2018";
+	};
+	(function() { // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+		s.src = 'https://pennie.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+	</script>
+</div></div>
+	
+	<div class="footer">
+		<p>
+			Copyright &copy; Pennie Quinn 2018
+			&middot;
+			Generated on Fri Nov  2 10:57:43 2018
+			&middot;
+			<a href="../index.html">Home</a>
+		</p>
+	</div>
+	
+	<script type="text/javascript">
+		//if (navigator.appVersion.indexOf("Win") >= 0) { document.body.className=""; }
+	</script>
+</body>
+</html>

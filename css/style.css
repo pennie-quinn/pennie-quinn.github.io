@@ -131,6 +131,37 @@ a:hover {
 .inner blockquote code {
   background-color: #ddd;
 }
+.inner table {
+  min-width: 80%;
+  max-width: 100%;
+  margin: auto;
+  font-family: monospace;
+  font-size: 16px;
+  border: 1px solid #eee;
+  border-collapse: collapse;
+}
+.inner table tr {
+  padding: 10px 20px;
+}
+.inner table tr:nth-child(even) {
+  background-color: #eee;
+}
+.inner table th {
+  text-decoration: underline;
+  border: none;
+}
+.inner table td {
+  border: none;
+}
+.inner table .l {
+  text-align: left;
+}
+.inner table .r {
+  text-align: right;
+}
+.inner table .m {
+  text-align: middle;
+}
 
 .footer {
   max-width: 980px;
