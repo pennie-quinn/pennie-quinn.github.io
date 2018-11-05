@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Fri Nov  2 10:59:03 2018" />
+	<link rel="stylesheet" href="../css/style.css?Mon Nov  5 08:30:17 2018" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>I made a Sokoban clone</title>
 	
@@ -53,6 +53,7 @@
 <div class="main-column">
 
 <div class="post-header">
+	<img class="cover" src="../img/default.png" alt="I made a Sokoban clone" />
 	<h1>I made a Sokoban clone</h1>
 	<div class="post-meta">
 		Posted
@@ -88,7 +89,7 @@ for them. So I wrote a file, just for SWIG, defining C functions to wrap my
 macros, which SWIG then wraps to Lua with prettier names. Yes, that is convoluted.
 No, it isn&rsquo;t pretty. Example:</p>
 
-<pre class="highlight lang_C"><code><span></span><span class="kt">double</span> <span class="nf">_macro_clamp</span>    <span class="p">(</span><span class="n">f64</span> <span class="n">v</span><span class="p">,</span> <span class="n">f64</span> <span class="n">a</span><span class="p">,</span> <span class="n">f64</span> <span class="n">b</span><span class="p">)</span>
+<pre class="highlight lang_C"><code><span></span><span class="kt">double</span> <span class="nf">_macro_clamp</span> <span class="p">(</span><span class="kt">float</span> <span class="n">v</span><span class="p">,</span> <span class="kt">float</span> <span class="n">a</span><span class="p">,</span> <span class="kt">float</span> <span class="n">b</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="k">return</span> <span class="n">clamp</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">);</span>
 <span class="p">}</span></code>
@@ -302,7 +303,7 @@ turn most <code>toast</code> modules into <code>paq_*.h</code> libraries, which 
 	<div id="disqus_thread"></div>
 	<script>
 	var disqus_config = function () {
-		//this.page.url = PAGE_URL;
+		this.page.url = "../posts/sokoban.html";
 		this.page.identifier = "I made a Sokoban clone" + "Wed, 24 Jan, 2018";
 	};
 	(function() { // DON'T EDIT BELOW THIS LINE
@@ -318,7 +319,7 @@ turn most <code>toast</code> modules into <code>paq_*.h</code> libraries, which 
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Fri Nov  2 10:59:03 2018
+			Generated on Mon Nov  5 08:30:17 2018
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>

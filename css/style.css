@@ -374,4 +374,9 @@ pre code, a code {
   color: #8eeaff;
 }
 
+.cover {
+  width: 100%;
+  box-shadow: none;
+}
+
 /*# sourceMappingURL=style.css.map */
