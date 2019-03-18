@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Mon Mar 18 18:06:41 2019" />
+	<link rel="stylesheet" href="../css/style.css?Mon Mar 18 18:32:41 2019" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>Going Full Bananacakes</title>
 	
@@ -53,7 +53,7 @@
 <div class="main-column">
 
 <div class="post-header">
-	<img class="cover" src="../img/default.png" alt="Going Full Bananacakes" />
+	<img class="cover" src="../img/banana.png" alt="Going Full Bananacakes" />
 	<h1>Going Full Bananacakes</h1>
 	<div class="post-meta">
 		Posted
@@ -62,7 +62,25 @@
 	</div>
 </div>
 
-<div class="inner post-body"><p>Spring Break occurred last week, and I did a few things to make my life easier, with satisfactory results. I had a showerthought:</p>
+<div class="inner post-body"><p>Spring Break occurred last week, and I did a few things to make my life easier, with satisfactory results. </p>
+
+<p><ul><li><a href="#introduction">Introduction</a></li>
+<li><a href="#hardware">Hardware</a></li>
+<li><a href="#one-environment">One Environment</a></li>
+<li><a href="#the-zen-of-tmux">The Zen of Tmux</a></li>
+<ul><li><a href="#the-zen-of-tmux/sensibility">Sensibility</a></li>
+<li><a href="#the-zen-of-tmux/persistence">Persistence</a></li>
+<li><a href="#the-zen-of-tmux/nested-sessions">Nested Sessions</a></li></ul>
+<li><a href="#nano-ain-and-rsquot-so-bad">Nano Ain&rsquo;t so Bad</a></li>
+<li><a href="#accessing-the-server">Accessing the Server</a></li>
+<li><a href="#results-remote-work-anytime-anyplace-on-anything">Results: Remote Work Anytime, Anyplace, on Anything</a></li>
+<ul><li><a href="#results-remote-work-anytime-anyplace-on-anything/going-further-bananacakes">Going Further Bananacakes</a></li></ul>
+<li><a href="#what-and-rsquos-next">What&rsquo;s Next</a></li>
+<li><a href="#screenshots">Screenshots</a></li></ul></p>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>I had a showerthought:</p>
 
 <blockquote><p>&ldquo;What if I just make a server at home with all my s***t on it and log into it to do everything? I generally know in advance if I won&rsquo;t have internet access, and I mainly just need a consistent dev environment&hellip;&rdquo;</p></blockquote>
 
@@ -74,22 +92,22 @@
 </ul>
 
 
-<h2>Hardware</h2>
+<h2 id="hardware">Hardware</h2>
 
 <p>I got the cheapest machine I could find which would run g++-8 at tolerable speed, among my other tools. 
 Specifically, I got <a href="https://amzn.to/2FnS1sJ">one of these</a>. </p>
 
 <p>Docker is probably a no-go on the Intel Atom micro pc I bought, but that&rsquo;s just fine for now. Due to modem placement and wanting ethernet speeds, my server has to be located in my roommate&rsquo;s bedroom, so its fanless, tiny design is a good thing, as I'm not taking up loads of her space or making noise.</p>
 
-<h2>One Environment</h2>
+<h2 id="one-environment">One Environment</h2>
 
 <p>The micro pc came with Windows 10 installed&mdash;that had to go. I slapped Ubuntu on there and installed my typical tools and dependencies. A daily cron job backs up my files to an external HDD, current projects are usually in Dropbox, and <code>scp</code> covers the gaps.</p>
 
-<h2>The Zen of Tmux</h2>
+<h2 id="the-zen-of-tmux">The Zen of Tmux</h2>
 
 <p>I had never used <code>screen</code> or <code>tmux</code> until last week. I've used i3, I've manually tiled windows, I've used tabs and panes in terminal emulators and text editors supporting them, but&hellip; Somehow I had never seen or tried <code>tmux</code>. And holy butts, is it dope.</p>
 
-<h3>Sensibility</h3>
+<h3 id="the-zen-of-tmux/sensibility">Sensibility</h3>
 
 <p>The default keybindings for tmux don&rsquo;t make much sense coming from a modern computing experience. Presumably, they made more sense when tmux was originally developed. In any case, the first order of business was to <code>man tmux</code> and go write a <code>~/.tmux.conf</code> to set sensible key bindings.</p>
 
@@ -110,35 +128,40 @@ unbind %
 </pre>
 
 
-<h3>Persistence</h3>
+<h3 id="the-zen-of-tmux/persistence">Persistence</h3>
 
 <p>The next order of business was to make sure I never have to set up my panes again. To do so, I needed to install <a href="https://github.com/tmux-plugins/tpm">Tmux Plugin Manager</a>, then install <a href="https://github.com/tmux-plugins/tmux-resurrect">Tmux Resurrect</a>, <em>then</em> install <a href="https://github.com/tmux-plugins/tmux-continuum">Tmux Continuum</a>. With all that done and tested, my tmux sessions now persist across reboots.</p>
 
-<h3>Nested Sessions</h3>
+<h3 id="the-zen-of-tmux/nested-sessions">Nested Sessions</h3>
 
 <p><code>~/tmux.conf</code> varies slightly between the server and my laptop, as <em>nested</em> tmux sessions can be a bit hinky: if you have redundant key bindings between them, the outer session will consume keystrokes you intended for the inner one.</p>
 
 <p>I found a <a href="http://stahlke.org/dan/tmux-nested/">clever way</a> around this, which is more complex than I needed. Prefixed bindings are easy: <code>ctrl+b d</code> becomes <code>ctrl+b b d</code> to reach the inner tmux session. For moving among panes, I added a <em>second</em> set of bindings to the server&rsquo;s config, allowing for <code>shift+arrow</code> in addition to <code>alt+arrow</code>. This way, if the server session is nested, I can still get around without issue, and if it <em>isn&rsquo;t</em> nested, I can use the bindings I'm used to.</p>
 
-<h2>Nano Ain&rsquo;t so Bad</h2>
+<h2 id="nano-ain-and-rsquot-so-bad">Nano Ain&rsquo;t so Bad</h2>
 
 <p>No, I still haven&rsquo;t gotten comfy in emacs or (neo)vim. Of the two, I will probably learn vim ultimately. In the meantime, I enjoy my graphical editors but can tolerate nano. With custom (modernized) keybindings and the addition of linting in the new versions, it is a perfectly tolerable editor. I still need to write a syntax file for <a href="https://moonscript.org">MoonScript</a>, but nano is mostly quite usable these days.</p>
 
-<h2>Accessing the Server</h2>
+<h2 id="accessing-the-server">Accessing the Server</h2>
 
 <p>Ok, so I have a server running Ubuntu with all my dev tools and a cozy cli. Next: set up an ssh server with a custom port, set up mosh, ignore all other incoming network traffic, and disable ping. Then, I went ahead and copied a key over from my lappy, so I don&rsquo;t have to type passwords constantly. Then, I set up appropriate port forwarding on my router, so I can log into my server from wherever.</p>
 
-<h2>Results: Remote Work Anytime, Anyplace, on Anything</h2>
+<h2 id="results-remote-work-anytime-anyplace-on-anything">Results: Remote Work Anytime, Anyplace, on Anything</h2>
 
 <p>So, with all that, I can work exactly the same on my ancient Macbook Air, my workable ASUS Zenbook, or a Chromebook, or Android with <a href="https://telegram.org">JuiceSSH</a>, or iOS with <a href="https://www.blink.sh">Blink</a>, with much better battery life than running builds and stuff locally.</p>
 
-<h3>Going Further Bananacakes</h3>
+<h3 id="results-remote-work-anytime-anyplace-on-anything/going-further-bananacakes">Going Further Bananacakes</h3>
 
 <p>Shortly after setting all this stuff up and moving my general workflow over, I had a good opportunity to try something unfamiliar. I've taken to using <a href="http://todotxt.org">todo.txt</a> lately. I also recently weighed myself for the first time in several months. After realizing that I somehow gained a whopping 40lb last year (curse you, alfredo), I wrote a little python script to generate todo entries prescribing calorie, hydration, and exercise goals for the day. Then, I made a <a href="https://telegram.org">Telegram</a> bot, and wrote <em>another</em> python script to send myself bot messages. Then I made a cron job on my server that, each morning, gets a list of my top-priority todos, prettifies them a little, and sends them to my phone via Telegram. I didn&rsquo;t really anticipate the convieniences of running a little server.</p>
 
-<h2>What&rsquo;s Next</h2>
+<h2 id="what-and-rsquos-next">What&rsquo;s Next</h2>
 
 <p>If this setup remains as deliciously convenient as it feels so far, I will eventually need to upgrade it a bit: a vpn maybe, a beefier server machine, etc. I really like the idea of using an iPad Pro 12.9" as my &ldquo;client&rdquo; machine. The iPad was already pretty nice for doing art, writing, or music stuff, but now I could do that stuff <em>and</em> code on it, too? Oof. Maybe in a year or two. ;)</p>
+
+<h2 id="screenshots">Screenshots</h2>
+
+<p><img src="../img/banana/0.png" />
+<img src="../img/banana/1.png" /></p>
 </div>
 
 <div class="comments">
@@ -162,7 +185,7 @@ unbind %
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Mon Mar 18 18:06:41 2019
+			Generated on Mon Mar 18 18:32:41 2019
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>
