@@ -1,0 +1,275 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="../css/style.css?Thu May  2 11:28:01 2019" />
+	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
+	<title>The Lester Hill Cipher</title>
+	
+	<script type="text/javascript">
+		window.site_root = "..";
+	</script>
+	
+	<script type="text/javascript">
+  if (window.location.hostname != "localhost") {
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-127983421-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  }
+</script>
+</head>
+
+<body class="nice_fonts">
+	
+<div class="sidebar">
+	<a href="../index.html" title="pennie.net">
+		<img class="logo" src="../img/devnull.svg" alt="pennie.net" />
+	</a>
+	
+	<p class="center">Pennie's ramblings.</p>
+	
+	<div class="sidebar_icons">
+		<a href="mailto:pennie.ada.quinn@gmail.com"><img src="../img/icon/mail.svg" alt="email" /></a>
+		<a href="https://twitter.com/transmutrix"><img src="../img/icon/twitter.svg" alt="twitter" /></a>
+		<a href="https://github.com/pennie-quinn"><img src="../img/icon/github.svg" alt="github" /></a>
+	</div>
+	
+	<br>
+	
+	<p>Recent Posts</p>
+	<p><a href='https://pennie-quinn.github.io/posts/hillcipher.html'>The Lester Hill Cipher</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/anatomy-spiral.html'>The Anatomy of a Spiral</a></p>
+<p><a href='https://pennie-quinn.github.io/posts/going-full-bananacakes.html'>Going Full Bananacakes</a></p>
+
+</div>
+	
+<div class="main-column">
+
+<div class="post-header">
+	<img class="cover" src="../img/default.png" alt="The Lester Hill Cipher" />
+	<h1>The Lester Hill Cipher</h1>
+	<div class="post-meta">
+		Posted
+		<span class: "post-date">Thu, May 02, 2019</span>
+		by Pennie (<a href="https://twitter.com/transmutrix">@transmutrix</a>)
+	</div>
+</div>
+
+<div class="inner post-body"><p>In Volume 36 No. 6 of <em>The American Mathematical Monthly</em>, published in Summer of 1929, Lester S. Hill authored an article titled &ldquo;Cryptography in an Algebraic Alphabet&rdquo;, wherein he outlined the first known polygraphic substitution cipher to support arbitrarily large alphabets and messages, although at the time, any significant usage was prohibitively cumbersome.</p>
+
+<p>The operations needed to decode a message would be very time consuming to perform by hand, and designing a mechanical system to perform the decryption would be an absolute nightmare! Below is a figure from Hill&rsquo;s patent for his &ldquo;message protector&rdquo; machine, which was capable of peforming 6x6 matrix multiplication modulo 26.</p>
+
+<p><img src="../img/message_protector.png" alt="Hill&rsquo;s &ldquo;message protector&rdquo; from his patent" /></p>
+
+<p>However, the key and alphabet for the machine had to be &ldquo;hard-coded&rdquo;, meaning that to use the cipher securely, you were recommended to (effectively) perform a manual &ldquo;public key encryption&rdquo; on your messages before feeding them into the machine. Still, Hill&rsquo;s cipher represents an important step toward modern cryptography, even if it went unappreciated in his time.</p>
+
+<h2>The Method</h2>
+
+<p>Below is the source code for my implementation of the Hill cipher in Python 3. A quick summary:</p>
+
+<ul>
+<li>decryption requires far more work than encryption.</li>
+<li>the lengths of the key and alphabet must be relatively prime.</li>
+<li>doing this by hand would make most people cry.</li>
+</ul>
+
+
+<pre class="highlight lang_Python"><code><span></span><span class="ch">#!/usr/bin/env python3</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c1"># output toggle</span>
+<span class="k">if</span> <span class="bp">False</span><span class="p">:</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="k">print</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">None</span>
+
+<span class="c1"># alphabet</span>
+<span class="n">alphabet</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="s1">&#39; abcdefghijklmnopqrstuvwxyz0123456789.?,-&#39;</span><span class="p">]</span>
+<span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;alphabet:</span><span class="se">\n\t</span><span class="s2">{alphabet} of length {len(alphabet)}&quot;</span><span class="p">)</span>
+
+<span class="c1"># character map</span>
+<span class="n">alphamap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)),</span> <span class="n">alphabet</span><span class="p">))</span>
+<span class="n">mapreverse</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">alphamap</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">alphamap</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+<span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;character map:</span><span class="se">\n\t</span><span class="s2">{alphamap}&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">message</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1"># 1. compute encoding matrix A</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">build_encoding_matrix</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;encoding matrix &#39;A&#39;:</span><span class="se">\n</span><span class="s2">{A}&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 2. compute message matrix B</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">build_message_matrix</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">message</span><span class="p">)</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;our message matrix &#39;B&#39;:</span><span class="se">\n</span><span class="s2">{B}&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3. compute AB</span>
+    <span class="n">AB</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">B</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">AB</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">%=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;the matrix &#39;AB(mod {len(alphabet)})&#39;:</span><span class="se">\n</span><span class="s2">{AB}&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 4. translate AB into characters</span>
+    <span class="n">encoded</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">alphamap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">AB</span><span class="o">.</span><span class="n">A1</span><span class="p">])</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;the encoded message:</span><span class="se">\n</span><span class="s2">&#39;{encoded}&#39;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">encoded</span>
+
+
+<span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">encoded</span><span class="p">):</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">encoded</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">encoded</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="c1"># 1. compute encoding matrix A</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">build_encoding_matrix</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="c1"># 2. compute decoding matrix A&#39;</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">inversemodmat</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">))</span>
+
+    <span class="c1"># 3. compute message matrix B</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">build_message_matrix</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="n">encoded</span><span class="p">)</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;our message matrix &#39;M&#39;:</span><span class="se">\n</span><span class="s2">{M}&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 4. compute AB</span>
+    <span class="n">BM</span> <span class="o">=</span> <span class="n">B</span> <span class="o">*</span> <span class="n">M</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">BM</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">%=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alphabet</span><span class="p">)</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;the matrix &#39;BM(mod {len(alphabet)})&#39;:</span><span class="se">\n</span><span class="s2">{BM}&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 5. translate AB into characters</span>
+    <span class="n">decoded</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">alphamap</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">BM</span><span class="o">.</span><span class="n">A1</span><span class="p">])</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;the decoded message:</span><span class="se">\n</span><span class="s2">&#39;{encoded}&#39;&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">decoded</span>
+
+
+<span class="c1"># helper functions</span>
+<span class="k">def</span> <span class="nf">powermod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="n">powermod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">%</span> <span class="n">m</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="n">m</span>
+
+    <span class="k">if</span> <span class="n">y</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">p</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span> <span class="o">%</span> <span class="n">m</span>
+
+
+<span class="k">def</span> <span class="nf">inversemodp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="c1"># we happen to know p will be prime, so we can use Fermat&#39;s Theorem</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">powermod</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">p</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">identitymat</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">inversemodmat</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+    <span class="n">inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">identitymat</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">inversemodp</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">],</span> <span class="n">q</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">factor</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;We got a problem =[&#39;</span><span class="p">)</span>
+        <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span> <span class="o">%</span> <span class="n">q</span>
+        <span class="n">inv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">inv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">factor</span> <span class="o">%</span> <span class="n">q</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">factor</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+                <span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">A</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="n">q</span>
+                <span class="n">inv</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">inv</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">inv</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">%</span> <span class="n">q</span>
+    <span class="k">return</span> <span class="n">inv</span>
+
+
+<span class="k">def</span> <span class="nf">build_encoding_matrix</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;key {key} of length {len(key)}&quot;</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
+    <span class="n">verbose</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;meaning our encoding matrix &#39;A&#39; will be {n}x{n} with </span><span class="se">\</span>
+<span class="s2">{n**2 - len(key)} padding values&quot;</span><span class="p">)</span>
+    <span class="c1">#   build the matrix</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">pad</span> <span class="o">=</span> <span class="p">[],</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>  <span class="c1"># rows</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>  <span class="c1"># cols</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="n">n</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+                <span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pad</span><span class="p">)</span>
+                <span class="n">pad</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">A</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapreverse</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="n">idx</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">build_message_matrix</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>  <span class="c1"># same # of rows!</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>  <span class="c1"># rows</span>
+        <span class="n">B</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>  <span class="c1"># cols</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">m</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+                <span class="n">B</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># pad with zeroes</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">B</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapreverse</span><span class="p">[</span><span class="n">message</span><span class="p">[</span><span class="n">idx</span><span class="p">]])</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matrix</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># test!</span>
+    <span class="n">codeword</span> <span class="o">=</span> <span class="s2">&quot;esketit&quot;</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;math is fun&quot;</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;key: {codeword}</span><span class="se">\n</span><span class="s2">message: {message}&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;encoded: {encode(codeword, message)}&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;decoded: {decode(codeword, encode(codeword, message))}&quot;</span><span class="p">)</span></code>
+</pre>
+
+</div>
+
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script>
+	var disqus_config = function () {
+		this.page.url = "../posts/.html";
+		this.page.identifier = "The Lester Hill Cipher" + "Thu, May 02, 2019";
+	};
+	(function() { // DON'T EDIT BELOW THIS LINE
+		var d = document, s = d.createElement('script');
+		s.src = 'https://pennie.disqus.com/embed.js';
+		s.setAttribute('data-timestamp', +new Date());
+		(d.head || d.body).appendChild(s);
+	})();
+	</script>
+</div></div>
+
+	
+	<div class="footer">
+		<p>
+			Copyright &copy; Pennie Quinn 2018
+			&middot;
+			Generated on Thu May  2 11:28:01 2019
+			&middot;
+			<a href="../index.html">Home</a>
+		</p>
+	</div>
+	
+	<script type="text/javascript">
+		//if (navigator.appVersion.indexOf("Win") >= 0) { document.body.className=""; }
+	</script>
+</body>
+</html>
