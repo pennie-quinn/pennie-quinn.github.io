@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Thu May  2 11:34:57 2019" />
+	<link rel="stylesheet" href="../css/style.css?Thu May  2 11:42:04 2019" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>The Lester Hill Cipher</title>
 	
@@ -72,15 +72,16 @@
 
 <h2>The Method</h2>
 
-<p>Below is the source code for my implementation of the Hill cipher in Python 3. 
-&ndash; Summary:
-  &ndash; Prerequisites:</p>
-
-<pre><code>- an alphabet and a keyphrase.
-- a mapping of the alphabet to integers.
-</code></pre>
+<h3>Summary:</h3>
 
 <ul>
+<li>Prerequisites:
+
+<ul>
+<li>an alphabet and a keyphrase.</li>
+<li>a mapping of the alphabet to integers.</li>
+</ul>
+</li>
 <li>Encoding:
 
 <ol>
@@ -100,16 +101,19 @@
 <li>Use the map to turn the resulting matrix back into characters of your alphabet.</li>
 </ol>
 </li>
-<li>Caveats:
+</ul>
+
+
+<h3>Caveats:</h3>
 
 <ul>
 <li>decryption requires far more work than encryption.</li>
 <li>the lengths of the key and alphabet must be relatively prime.</li>
 <li>doing this by hand would make most people cry.</li>
 </ul>
-</li>
-</ul>
 
+
+<p>Below is the source code for my implementation of the Hill cipher in Python 3. </p>
 
 <pre class="highlight lang_Python"><code><span></span><span class="ch">#!/usr/bin/env python3</span>
 
@@ -269,6 +273,17 @@
     <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;decoded: {decode(codeword, encode(codeword, message))}&quot;</span><span class="p">)</span></code>
 </pre>
 
+
+<h2>Files</h2>
+
+<ul>
+<li><a href="../files/paper.pdf">PDF of this post</a></li>
+<li><a href="../files/lesterhill.py">lesterhill.py</a></li>
+<li><a href="../files/example1.txt">example use</a></li>
+<li><a href="../files/example2.txt">example use</a></li>
+<li><a href="../files/example3.txt">example use</a></li>
+</ul>
+
 </div>
 
 <div class="comments">
@@ -292,7 +307,7 @@
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Thu May  2 11:34:57 2019
+			Generated on Thu May  2 11:42:04 2019
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>

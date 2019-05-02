@@ -1,0 +1,44 @@
+alphabet:
+	[' ', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '?', ',', '-'] of length 41
+character map:
+	{0: ' ', 1: 'a', 2: 'b', 3: 'c', 4: 'd', 5: 'e', 6: 'f', 7: 'g', 8: 'h', 9: 'i', 10: 'j', 11: 'k', 12: 'l', 13: 'm', 14: 'n', 15: 'o', 16: 'p', 17: 'q', 18: 'r', 19: 's', 20: 't', 21: 'u', 22: 'v', 23: 'w', 24: 'x', 25: 'y', 26: 'z', 27: '0', 28: '1', 29: '2', 30: '3', 31: '4', 32: '5', 33: '6', 34: '7', 35: '8', 36: '9', 37: '.', 38: '?', 39: ',', 40: '-'}
+key: math
+message: math is fun
+key math of length 4
+meaning our encoding matrix 'A' will be 2x2 with 0 padding values
+encoding matrix 'A':
+[[13  1]
+ [20  8]]
+our message matrix 'B':
+[[13  1 20  8  0  9]
+ [19  0  6 21 14  0]]
+the matrix 'AB(mod 41)':
+[[24 13 20  2 14 35]
+ [ 2 20 38  0 30 16]]
+the encoded message:
+'xmtbn8bt? 3p'
+encoded: xmtbn8bt? 3p
+key math of length 4
+meaning our encoding matrix 'A' will be 2x2 with 0 padding values
+encoding matrix 'A':
+[[13  1]
+ [20  8]]
+our message matrix 'B':
+[[13  1 20  8  0  9]
+ [19  0  6 21 14  0]]
+the matrix 'AB(mod 41)':
+[[24 13 20  2 14 35]
+ [ 2 20 38  0 30 16]]
+the encoded message:
+'xmtbn8bt? 3p'
+key math of length 4
+meaning our encoding matrix 'A' will be 2x2 with 0 padding values
+our message matrix 'M':
+[[24 13 20  2 14 35]
+ [ 2 20 38  0 30 16]]
+the matrix 'BM(mod 41)':
+[[13  1 20  8  0  9]
+ [19  0  6 21 14  0]]
+the decoded message:
+'xmtbn8bt? 3p'
+decoded: math is fun 
