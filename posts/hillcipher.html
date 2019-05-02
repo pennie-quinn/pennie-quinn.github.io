@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<link rel="stylesheet" href="../css/style.css?Thu May  2 11:28:01 2019" />
+	<link rel="stylesheet" href="../css/style.css?Thu May  2 11:34:57 2019" />
 	<link rel="alternate" type="application/rss+xml" title="pennie-quinn.github.io posts" href="../posts.xml" />
 	<title>The Lester Hill Cipher</title>
 	
@@ -72,12 +72,42 @@
 
 <h2>The Method</h2>
 
-<p>Below is the source code for my implementation of the Hill cipher in Python 3. A quick summary:</p>
+<p>Below is the source code for my implementation of the Hill cipher in Python 3. 
+&ndash; Summary:
+  &ndash; Prerequisites:</p>
+
+<pre><code>- an alphabet and a keyphrase.
+- a mapping of the alphabet to integers.
+</code></pre>
+
+<ul>
+<li>Encoding:
+
+<ol>
+<li>Use the map to create a square matrix of dimension n from the keyphrase.</li>
+<li>Use the map to create a matrix of n rows (and however many columns) from the message.</li>
+<li>Multiply the encoding matrix by the message matrix.</li>
+<li>Use the map to turn the resulting matrix back into characters of your alphabet.</li>
+</ol>
+</li>
+<li>Decoding:
+
+<ol>
+<li>Use the map to create a square matrix of dimension n from the keyphrase.</li>
+<li>Now, make the modular multiplicative inverse of that matrix. This is your decoder, and where most of the work happens.</li>
+<li>Use the map to create a matrix of n rows (and however many columns) from the encoded message.</li>
+<li>Multiply the decoder matrix by the encoded matrix.</li>
+<li>Use the map to turn the resulting matrix back into characters of your alphabet.</li>
+</ol>
+</li>
+<li>Caveats:
 
 <ul>
 <li>decryption requires far more work than encryption.</li>
 <li>the lengths of the key and alphabet must be relatively prime.</li>
 <li>doing this by hand would make most people cry.</li>
+</ul>
+</li>
 </ul>
 
 
@@ -262,7 +292,7 @@
 		<p>
 			Copyright &copy; Pennie Quinn 2018
 			&middot;
-			Generated on Thu May  2 11:28:01 2019
+			Generated on Thu May  2 11:34:57 2019
 			&middot;
 			<a href="../index.html">Home</a>
 		</p>
