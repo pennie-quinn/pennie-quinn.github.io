@@ -89,15 +89,18 @@ a {
     margin-bottom: 34px; }
   .inner p {
     margin: 34px 0; }
-  .inner img {
+  .inner img, .inner embed {
     border: 1px solid #dadada;
     box-shadow: 2px 2px 16px #ddd;
     display: block;
     max-width: 512px;
     margin: auto; }
-    .inner img.inline {
+    .inner img.inline, .inner embed.inline {
       border: none;
       box-shadow: none; }
+  .inner embed {
+    min-width: 512px;
+    min-height: 384px; }
   .inner blockquote {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
