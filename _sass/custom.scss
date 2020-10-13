@@ -1,0 +1,88 @@
+@charset "utf-8";
+
+body {
+	background: #eee;
+	font-size: 16px;
+}
+
+// code blocks
+code {
+	background: #fff;
+	color: #333;
+	font-size: 90%;
+}
+
+pre {
+	background: #333 !important;
+	color: white;
+	overflow: auto;
+	max-height: 300px;
+
+	code {
+		background: #333;
+		color: white;
+		font-size: 100%;
+	}
+}
+
+// images
+img, embed, iframe {
+	border: 1px solid #dadada;
+	box-shadow: 2px 2px 16px #ddd;
+	display: block;
+
+	//max-width: 512px;
+	max-width: 100%;
+	margin: auto;
+}
+
+// buttons
+.button {
+	margin: auto;
+	max-width: 100%;
+	padding: 24px 32px;
+
+	background-color: black;
+	border: none;
+	color: white;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+
+	transition-duration: 0.2s;
+}
+
+.button:hover {
+	background-color: #333;
+}
+
+// tags
+.tags {
+	//margin: auto;
+	//text-align: center;
+}
+.tag {
+	display: inline-block;
+	//background-color: black;
+	//color: white;
+	//background-color: white;
+	padding: 5px 15px 5px 15px;
+	//border-radius: 32px;
+}
+.tag:hover {
+	//background-color: #333;
+	//background-color: #aaa;
+}
+
+// social icons
+.svg-icon {
+	width: 18px !important;
+	height: 18px !important;
+	fill: black !important;
+}
+
+@import
+	"custom/syntax/monokai",
+	"custom/itch"
+;

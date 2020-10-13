@@ -1,0 +1,37 @@
+.itch {
+	width: 250px;
+	height: 250px;
+	display: inline-block;
+	//border: 1px solid #dadada;
+	//border-radius: 4px;
+	padding: 20px 20px 20px 20px;
+	margin-bottom: 10px;
+	vertical-align: top;
+
+	&:hover {
+		background-color: #eee;
+	}
+
+	iframe {
+		margin-left: auto;
+		align: center;
+	}
+
+	h3 {
+		padding: 0;
+		margin: 0;
+		text-align: center;
+		font-size: 18px;
+		text-decoration: underline;
+	}
+
+	p {
+		padding-left: 5px;
+		margin: 0;
+		font-size: 14px;
+		line-height: 18px;
+		color: #444;
+	}
+
+	//box-shadow: 2px 2px 16px #ddd;
+}

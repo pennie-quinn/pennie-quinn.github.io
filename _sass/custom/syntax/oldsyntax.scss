@@ -1,0 +1,16 @@
+// syntax colors
+$salmon: #ff8ebb;
+$salmon2: darken($salmon, 10%);
+$surf: #8eeaff;
+
+/* identifiers */ .n { color: white; }
+/* builtins */ .nb { color: #ffa122; }
+/* strings */ .s, .s1, .s2, .se { color: #9fff98; }
+/* proper names, self */ .nc, .vc, .bp { color: #98d9ff; }
+/* true, false, nil */ .kc, .ow { color: $salmon2; }
+/* function lit, braces, parens  */ .nf, .kt, .gp { color: #ffe898; }
+/* operators */ .o, .p, .si { font-weight: bold; color: $salmon; }
+.nv { color: #ff9898; }
+/* keywords */ .k, .kd, .kr, .kn, .cp { font-weight: bold; color: $salmon; }
+/* comments */ .c, .c1, .c2, .cm { color: #929292; }
+/* num literals */ .m, .mi, .mf, .mh { color: $surf; }
